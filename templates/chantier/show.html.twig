@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chantier{% endblock %}
+
+{% block body %}
+    <h1>Chantier</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ chantier.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ chantier.Nom }}</td>
+            </tr>
+            <tr>
+                <th>CodeChantier</th>
+                <td>{{ chantier.CodeChantier }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ chantier.Adresse }}</td>
+            </tr>
+            <tr>
+                <th>NIF</th>
+                <td>{{ chantier.NIF }}</td>
+            </tr>
+            <tr>
+                <th>STAT</th>
+                <td>{{ chantier.STAT }}</td>
+            </tr>
+            <tr>
+                <th>ContactClient</th>
+                <td>{{ chantier.ContactClient }}</td>
+            </tr>
+            <tr>
+                <th>ResponsableChantier</th>
+                <td>{{ chantier.ResponsableChantier }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chantier_index') }}">back to list</a>
+
+    <a href="{{ path('app_chantier_edit', {'id': chantier.id}) }}">edit</a>
+
+    {{ include('chantier/_delete_form.html.twig') }}
+{% endblock %}

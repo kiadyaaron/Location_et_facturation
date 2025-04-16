@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Materiel{% endblock %}
+
+{% block body %}
+    <h1>Materiel</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ materiel.id }}</td>
+            </tr>
+            <tr>
+                <th>Libelle</th>
+                <td>{{ materiel.Libelle }}</td>
+            </tr>
+            <tr>
+                <th>CodeAffaire</th>
+                <td>{{ materiel.CodeAffaire }}</td>
+            </tr>
+            <tr>
+                <th>Unite</th>
+                <td>{{ materiel.Unite }}</td>
+            </tr>
+            <tr>
+                <th>PrixUnitaire</th>
+                <td>{{ materiel.PrixUnitaire }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ materiel.Description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_materiel_index') }}">back to list</a>
+
+    <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}">edit</a>
+
+    {{ include('materiel/_delete_form.html.twig') }}
+{% endblock %}

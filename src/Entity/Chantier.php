@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Repository\ChantierRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Materiel;
 
 #[ORM\Entity(repositoryClass: ChantierRepository::class)]
 class Chantier
@@ -34,6 +37,15 @@ class Chantier
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $ResponsableChantier = null;
 
+    //Relation inverse : un chantier possède plusieurs matériels
+    #[ORM\OneToMany(mappedBy: 'chantier', targetEntity: Materiel::class, orphanRemoval: true)]
+    private Collection $materiels;
+
+    public function __construct()
+    {
+        $this->materiels = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -42,7 +54,6 @@ class Chantier
     public function setId(int $id): static
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -54,7 +65,6 @@ class Chantier
     public function setNom(string $Nom): static
     {
         $this->Nom = $Nom;
-
         return $this;
     }
 
@@ -66,7 +76,6 @@ class Chantier
     public function setCodeChantier(string $CodeChantier): static
     {
         $this->CodeChantier = $CodeChantier;
-
         return $this;
     }
 
@@ -78,7 +87,6 @@ class Chantier
     public function setAdresse(string $Adresse): static
     {
         $this->Adresse = $Adresse;
-
         return $this;
     }
 
@@ -90,7 +98,6 @@ class Chantier
     public function setNIF(string $NIF): static
     {
         $this->NIF = $NIF;
-
         return $this;
     }
 
@@ -102,7 +109,6 @@ class Chantier
     public function setSTAT(string $STAT): static
     {
         $this->STAT = $STAT;
-
         return $this;
     }
 
@@ -114,7 +120,6 @@ class Chantier
     public function setContactClient(string $ContactClient): static
     {
         $this->ContactClient = $ContactClient;
-
         return $this;
     }
 
@@ -126,6 +131,33 @@ class Chantier
     public function setResponsableChantier(?string $ResponsableChantier): static
     {
         $this->ResponsableChantier = $ResponsableChantier;
+        return $this;
+    }
+
+    //Getter/Setter pour accéder à la collection de matériels
+
+    public function getMateriels(): Collection
+    {
+        return $this->materiels;
+    }
+
+    public function addMateriel(Materiel $materiel): static
+    {
+        if (!$this->materiels->contains($materiel)) {
+            $this->materiels[] = $materiel;
+            $materiel->setChantier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMateriel(Materiel $materiel): static
+    {
+        if ($this->materiels->removeElement($materiel)) {
+            if ($materiel->getChantier() === $this) {
+                $materiel->setChantier(null);
+            }
+        }
 
         return $this;
     }
