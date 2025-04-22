@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Chantier;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,13 +13,27 @@ class ChantierType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Nom')
-            ->add('CodeChantier')
-            ->add('Adresse')
-            ->add('NIF')
-            ->add('STAT')
-            ->add('ContactClient')
-            ->add('ResponsableChantier')
+            ->add('Nom', TextType::class, [
+                'label' => 'Nom',
+            ])
+            ->add('CodeChantier', TextType::class, [
+                'label' => 'Code chantier',
+            ])
+            ->add('Adresse', TextType::class, [
+                'label' => 'Adresse',
+            ])
+            ->add('NIF', TextType::class, [
+                'label' => 'NIF',
+            ])
+            ->add('STAT', TextType::class, [
+                'label' => 'STAT',
+            ])
+            ->add('ContactClient', TextType::class, [
+                'label' => 'Contact du client',
+            ])
+            ->add('ResponsableChantier', TextType::class, [
+                'label' => 'Responsable du chantier',
+            ])
         ;
     }
 

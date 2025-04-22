@@ -29,7 +29,6 @@ class Materiel
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Description = null;
 
-    // Relation vers Chantier : chaque matériel est affecté à UN chantier
     #[ORM\ManyToOne(targetEntity: Chantier::class, inversedBy: 'materiels')]
     #[ORM\JoinColumn(nullable: true)] 
     private ?Chantier $chantier = null;

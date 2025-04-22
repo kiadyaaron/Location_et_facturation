@@ -13,22 +13,18 @@ class Affectation
     #[ORM\Column]
     private ?int $id = null;
 
-    //Chaque affectation concerne un seul chantier
     #[ORM\ManyToOne(targetEntity: Chantier::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Chantier $chantier = null;
 
-    // Chaque affectation concerne un seul matériel
     #[ORM\ManyToOne(targetEntity: Materiel::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Materiel $materiel = null;
 
-    // Durée d’utilisation (en jours ou heures)
-    #[ORM\Column]
-    private ?int $dureeUtilisation = null;
+    #[ORM\Column(length: 255)]
+    private ?string $dureeUtilisation = null;
 
-    // Mois de facturation (ex: "04/2025")
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 255)]
     private ?string $moisFacturation = null;
 
     public function getId(): ?int

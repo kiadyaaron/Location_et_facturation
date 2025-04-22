@@ -37,7 +37,6 @@ class Chantier
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $ResponsableChantier = null;
 
-    //Relation inverse : un chantier possède plusieurs matériels
     #[ORM\OneToMany(mappedBy: 'chantier', targetEntity: Materiel::class, orphanRemoval: true)]
     private Collection $materiels;
 
