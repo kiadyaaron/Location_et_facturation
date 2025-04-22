@@ -1,47 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Chantier index{% endblock %}
+{% block title %}Chantier {% endblock %}
 
 {% block body %}
-    <h1>Chantier index</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Liste des Chantiers</h1>
 
-    <table class="table">
-        <thead>
+    <a href="{{ path('app_chantier_new') }}" class="btn btn-success mb-3">+ Nouveau Chantier</a>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
             <tr>
-                <th>Id</th>
+                <th>ID</th>
                 <th>Nom</th>
-                <th>CodeChantier</th>
+                <th>Code Chantier</th>
                 <th>Adresse</th>
                 <th>NIF</th>
                 <th>STAT</th>
-                <th>ContactClient</th>
-                <th>ResponsableChantier</th>
-                <th>actions</th>
+                <th>Contact client</th>
+                <th>Responsable chantier</th>
+                <th>Options</th>
             </tr>
         </thead>
         <tbody>
         {% for chantier in chantiers %}
             <tr>
                 <td>{{ chantier.id }}</td>
-                <td>{{ chantier.Nom }}</td>
-                <td>{{ chantier.CodeChantier }}</td>
-                <td>{{ chantier.Adresse }}</td>
+                <td>{{ chantier.nom }}</td>
+                <td>{{ chantier.codeChantier }}</td>
+                <td>{{ chantier.adresse }}</td>
                 <td>{{ chantier.NIF }}</td>
                 <td>{{ chantier.STAT }}</td>
                 <td>{{ chantier.ContactClient }}</td>
                 <td>{{ chantier.ResponsableChantier }}</td>
                 <td>
-                    <a href="{{ path('app_chantier_show', {'id': chantier.id}) }}">show</a>
-                    <a href="{{ path('app_chantier_edit', {'id': chantier.id}) }}">edit</a>
+                    
+                    <a href="{{ path('app_chantier_edit', {'id': chantier.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    <form method="post" action="{{ path('app_chantier_delete', {'id': chantier.id}) }}"
+                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce chantier ?');"
+                          style="display:inline-block">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chantier.id) }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="9">no records found</td>
+                <td colspan="9">Aucun chantier trouvé</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_chantier_new') }}">Create new</a>
+</div>
 {% endblock %}

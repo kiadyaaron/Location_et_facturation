@@ -1,20 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Materiel index{% endblock %}
+{% block title %}Materiel {% endblock %}
 
 {% block body %}
-    <h1>Materiel index</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Liste des matériels</h1>
 
-    <table class="table">
-        <thead>
+    <a href="{{ path('app_materiel_new') }}" class="btn btn-success mb-3">+ Nouveau Matériel</a>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
             <tr>
                 <th>Id</th>
                 <th>Libelle</th>
-                <th>CodeAffaire</th>
+                <th>Code Affaire</th>
                 <th>Unite</th>
-                <th>PrixUnitaire</th>
+                <th>Prix Unitaire</th>
                 <th>Description</th>
-                <th>actions</th>
+                <th>Options</th>
             </tr>
         </thead>
         <tbody>
@@ -27,17 +30,25 @@
                 <td>{{ materiel.PrixUnitaire }}</td>
                 <td>{{ materiel.Description }}</td>
                 <td>
-                    <a href="{{ path('app_materiel_show', {'id': materiel.id}) }}">show</a>
-                    <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}">edit</a>
+                    
+                    <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    <form method="post" action="{{ path('app_materiel_delete', {'id': materiel.id}) }}"
+                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce materiel ?');"
+                          style="display:inline-block">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ materiel.id) }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="7">Aucun matériel trouvé</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_materiel_new') }}">Create new</a>
+
+</div>
 {% endblock %}

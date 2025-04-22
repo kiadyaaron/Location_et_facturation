@@ -21,7 +21,8 @@ class MaterielType extends AbstractType
             ->add('Description')
             ->add('chantier', EntityType::class, [
                 'class' => Chantier::class,
-'choice_label' => 'id',
+                'choice_label' => 'nom',
+                'placeholder' => '— Aucun chantier —',
             ])
         ;
     }

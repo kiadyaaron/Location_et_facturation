@@ -1,17 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Affectation index{% endblock %}
+{% block title %}Affectation {% endblock %}
 
 {% block body %}
-    <h1>Affectation index</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Liste des affectations</h1>
 
-    <table class="table">
-        <thead>
+    <a href="{{ path('app_affectation_new') }}" class="btn btn-success mb-3">+ Nouvelle Affectation</a>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
             <tr>
                 <th>Id</th>
-                <th>DureeUtilisation</th>
-                <th>MoisFacturation</th>
-                <th>actions</th>
+                <th>Duree d'utilisation</th>
+                <th>Mois de facturation</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,17 +24,24 @@
                 <td>{{ affectation.dureeUtilisation }}</td>
                 <td>{{ affectation.moisFacturation }}</td>
                 <td>
-                    <a href="{{ path('app_affectation_show', {'id': affectation.id}) }}">show</a>
-                    <a href="{{ path('app_affectation_edit', {'id': affectation.id}) }}">edit</a>
+                    
+                    <a href="{{ path('app_affectation_edit', {'id': affectation.id}) }}">Modifier</a>
+                    <form method="post" action="{{ path('app_affectation_delete', {'id': affectation.id}) }}"
+                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette affectation ?');"
+                          style="display:inline-block">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ affectation.id) }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">Aucune affectation trouvée</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_affectation_new') }}">Create new</a>
+    
 {% endblock %}
