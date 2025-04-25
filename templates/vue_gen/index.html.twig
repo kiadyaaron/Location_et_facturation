@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello VueGenController!{% endblock %}
+
+{% block body %}
+<style>
+    .card {
+        background-color: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        width: 100%;
+        max-width: 300px;
+         transition: background-color 1s ease, box-shadow 0.3s ease
+    }
+
+    .card:hover {
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        background-color:rgb(100, 206, 255);
+    }
+</style>   
+
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+
+    <h2 class="text-center mb-5">
+        Bonjour {{ app.user.firstname }}, Que souhaitez-vous voir?
+    </h2>
+
+    <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap">
+        <a href="{{ path('app_chantier_index') }}" class="text-decoration-none">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Chantiers</h5>
+                    <p class="card-text">Liste et nouveau</p>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ path('app_materiel_index') }}" class="text-decoration-none">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Matériels</h5>
+                    <p class="card-text">Liste et nouveau</p>
+                </div>
+            </div>
+        </a>
+        <a href="{{ path('app_affectation_index') }}" class="text-decoration-none">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Vous inscrire</h5>
+                    <p class="card-text">Liste et nouveau</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+{% endblock %}
