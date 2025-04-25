@@ -7,7 +7,27 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}{% endblock %}
     </head>
-    <body style="background-color: #f8f9fa">
+    <body style="background-color: #f8f9fa; padding-top: 60px;">
+    <header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="{{ path('app_vueGen') }}">OTI</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            
+            <div class="ms-auto d-flex align-items-center navbar-item-custom">    
+        {% if app.user %}
+            <a href="{{path('app_account')}}">Mon Compte <small>({{app.user.firstname}})</small></a> |
+            <a href="{{path('app_logout')}}">Déconnexion</a>
+        {% else %}
+            <a href="{{path('app_login')}}">Connexion</a> |
+            <a href="{{path('app_register')}}">Inscription</a>
+        {% endif %}  
+    </div>
+        </div>
+    </nav>
+</header>
     
         {% block body %}{% endblock %}
     
