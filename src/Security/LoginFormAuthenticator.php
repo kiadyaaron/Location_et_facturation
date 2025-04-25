@@ -29,9 +29,12 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public function authenticate(Request $request): Passport
     {
         $email = $request->request->get('email');
-    
+        if (!$email) {
+            throw new \LogicException('Email is missing from the request!');
+        }
+
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
-    
+
         return new Passport(
             new UserBadge($email),
             new PasswordCredentials($request->request->get('password')),
@@ -41,7 +44,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             ]
         );
     }
-    
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
@@ -49,7 +51,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // Redirection après connexion réussie
         return new RedirectResponse($this->urlGenerator->generate('app_account'));
     }
 

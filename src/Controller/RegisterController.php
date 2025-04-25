@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use App\Security\LoginFormAuthenticator;
+
 
 final class RegisterController extends AbstractController
 {
@@ -25,7 +28,9 @@ final class RegisterController extends AbstractController
     }
 
     #[Route('/inscription', name: 'app_register')]
-    public function index(Request $request): Response
+    public function index( Request $request,
+    UserAuthenticatorInterface $userAuthenticator,
+    LoginFormAuthenticator $authenticator): Response
     {
         $user = new User();
         $form = $this->createForm(RegisterType::class, $user);
@@ -41,11 +46,15 @@ final class RegisterController extends AbstractController
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-
-            // Message flash et redirection
+            $userAuthenticator->authenticateUser(
+                $user,
+                $authenticator,
+                $request
+            );
+            
             $this->addFlash('success', 'Inscription réussie. Vous pouvez maintenant vous connecter.');
-
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_account');
+            
         }
 
         return $this->render('register/index.html.twig', [
