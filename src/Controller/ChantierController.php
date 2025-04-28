@@ -12,14 +12,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/chantier')]
-final class ChantierController extends AbstractController{
-    #[Route(name: 'app_chantier_index', methods: ['GET'])]
-    public function index(ChantierRepository $chantierRepository): Response
+final class ChantierController extends AbstractController
+{
+    #[Route(name: 'app_chantier_index', methods: ['GET', 'POST'])]
+    public function index(Request $request, ChantierRepository $chantierRepository): Response
     {
-        return $this->render('chantier/index.html.twig', [
-            'chantiers' => $chantierRepository->findAll(),
-        ]);
+    $search = $request->request->get('search');
+
+    if ($search) {
+        $chantiers = $chantierRepository->search($search);
+    } else {
+        $chantiers = $chantierRepository->findAll();
     }
+
+    return $this->render('chantier/index.html.twig', [
+        'chantiers' => $chantiers,
+    ]);
+}
+
 
     #[Route('/new', name: 'app_chantier_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -70,7 +80,7 @@ final class ChantierController extends AbstractController{
     #[Route('/{id}', name: 'app_chantier_delete', methods: ['POST'])]
     public function delete(Request $request, Chantier $chantier, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$chantier->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $chantier->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($chantier);
             $entityManager->flush();
         }

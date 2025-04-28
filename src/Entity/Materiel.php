@@ -33,6 +33,11 @@ class Materiel
     #[ORM\JoinColumn(nullable: true)] 
     private ?Chantier $chantier = null;
 
+    public function __toString(): string
+    {
+        return $this->Libelle ?? '';
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -93,7 +98,6 @@ class Materiel
         return $this;
     }
 
-    // Getter/Setter pour accéder au chantier lié
     public function getChantier(): ?Chantier
     {
         return $this->chantier;

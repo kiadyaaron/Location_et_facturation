@@ -40,6 +40,11 @@ class Chantier
     #[ORM\OneToMany(mappedBy: 'chantier', targetEntity: Materiel::class, orphanRemoval: true)]
     private Collection $materiels;
 
+    public function __toString(): string
+    {
+        return $this->Nom ?? '';
+    }
+
     public function __construct()
     {
         $this->materiels = new ArrayCollection();

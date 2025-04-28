@@ -14,6 +14,8 @@
                 <th>Id</th>
                 <th>Duree d'utilisation</th>
                 <th>Mois de facturation</th>
+                <th>Chantier</th>
+                <th>Matériel</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -23,6 +25,8 @@
                 <td>{{ affectation.id }}</td>
                 <td>{{ affectation.dureeUtilisation }}</td>
                 <td>{{ affectation.moisFacturation }}</td>
+                <td>{{ affectation.chantier }}</td>
+                <td>{{ affectation.materiel }}</td>
                 <td>
                     
                     <a href="{{ path('app_affectation_edit', {'id': affectation.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
