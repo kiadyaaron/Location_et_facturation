@@ -23,7 +23,7 @@ class Materiel
     #[ORM\Column(length: 255)]
     private ?string $Unite = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'integer')]
     private ?string $PrixUnitaire = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -76,12 +76,12 @@ class Materiel
         return $this;
     }
 
-    public function getPrixUnitaire(): ?string
+    public function getPrixUnitaire(): ?int
     {
         return $this->PrixUnitaire;
     }
 
-    public function setPrixUnitaire(string $PrixUnitaire): static
+    public function setPrixUnitaire(int $PrixUnitaire): static
     {
         $this->PrixUnitaire = $PrixUnitaire;
         return $this;

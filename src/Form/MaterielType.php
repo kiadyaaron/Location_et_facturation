@@ -23,6 +23,7 @@ class MaterielType extends AbstractType
                 'class' => Chantier::class,
                 'choice_label' => 'nom',
                 'placeholder' => '— Aucun chantier —',
+                'required' => false,
             ])
         ;
     }

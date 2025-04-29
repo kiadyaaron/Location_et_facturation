@@ -40,4 +40,19 @@ class MaterielRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function search(string $term): array
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->leftJoin('m.chantier', 'c')
+            ->addSelect('c')
+            ->where('LOWER(m.Libelle) LIKE :term')
+            ->orWhere('LOWER(m.CodeAffaire) LIKE :term')
+            ->orWhere('LOWER(m.Unite) LIKE :term')
+            ->orWhere('LOWER(m.Description) LIKE :term')
+            ->orWhere('LOWER(c.Nom) LIKE :term') 
+            ->setParameter('term', '%' . strtolower($term) . '%')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }

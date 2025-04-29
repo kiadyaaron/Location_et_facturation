@@ -14,10 +14,18 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/materiel')]
 final class MaterielController extends AbstractController{
     #[Route(name: 'app_materiel_index', methods: ['GET'])]
-    public function index(MaterielRepository $materielRepository): Response
+    public function index(Request $request, MaterielRepository $materielRepository): Response
     {
+        $search = $request->query->get('search'); // <-- search vient de GET (pas POST)
+        
+        if ($search) {
+            $materiels = $materielRepository->search($search);
+        } else {
+            $materiels = $materielRepository->findAll();
+        }
+
         return $this->render('materiel/index.html.twig', [
-            'materiels' => $materielRepository->findAll(),
+            'materiels' => $materiels,
         ]);
     }
 

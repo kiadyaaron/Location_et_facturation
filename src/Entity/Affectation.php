@@ -24,8 +24,11 @@ class Affectation
     #[ORM\Column(length: 255)]
     private ?string $dureeUtilisation = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 7)] 
     private ?string $moisFacturation = null;
+
+    #[ORM\Column]
+    private ?int $QuantiteMateriel = null;
 
     public function getId(): ?int
     {
@@ -70,9 +73,21 @@ class Affectation
         return $this->moisFacturation;
     }
 
-    public function setMoisFacturation(string $mois): static
+    public function setMoisFacturation(string $moisFacturation): static
     {
-        $this->moisFacturation = $mois;
+        $this->moisFacturation = $moisFacturation;
+        return $this;
+    }
+
+    public function getQuantiteMateriel(): ?int
+    {
+        return $this->QuantiteMateriel;
+    }
+
+    public function setQuantiteMateriel(int $QuantiteMateriel): static
+    {
+        $this->QuantiteMateriel = $QuantiteMateriel;
+
         return $this;
     }
 }

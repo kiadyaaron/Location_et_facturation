@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        .header, .client-info { display: flex; justify-content: space-between; }
+        .header div, .client-info div { width: 45%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid black; }
+        th, td { padding: 8px; text-align: center; }
+        .totaux { margin-top: 20px; }
+        .totaux p { font-weight: bold; }
+        .title-center { text-align: center; margin: 10px 0; font-weight: bold; margin-top: 60px; }
+        p.objet { margin-left: 50px; } 
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <strong>RENTAL ET MAINTENANCE EQUIPEMENT</strong><br>
+        Lot IA 58 Ampatsakana Antananarivo 101 MADAGASCAR<br>
+        NIF: 4018541489<br>
+        STAT: 77396 11 2024 0 10536<br>
+        CF: 0150053/DGI-L<br>
+        Tél-Fax: 020 22 323 48<br>
+        e-mail: 
+    </div>
+    <div style="position: absolute; top: 75px; right: 0; text-align: right;">
+        Antananarivo, le {{ "now"|date('d/m/Y') }}
+    </div>
+</div>
+
+<br>
+
+<div class="client-info">
+    <div></div> 
+    <div style="position: absolute; top: 100px; right: 0; text-align: right;">
+        {{ chantier.nom|upper }}<br>
+        {{ chantier.adresse }}<br>
+        101 Antananarivo Madagascar<br>
+        NIF : {{ chantier.nif }}<br>
+        STAT : {{ chantier.stat }}
+    </div>
+</div>
+
+<br>
+
+<div class="title-center">
+    {{ facturee }}<br><br>
+</div>
+
+<p class="objet">Objet : LOCATION MATERIELS</p>
+
+<p>FACTURE MOIS DE : {{ mois|date('F')|upper }}</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Matériel</th>
+            <th>Quantité</th>
+            <th>Prix Unitaire</th>
+            <th>Montant HT</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for affectation in affectations %}
+            <tr>
+                <td>{{ affectation.materiel.libelle }}</td>
+                <td>{{ affectation.quantiteMateriel }}</td>
+                <td>{{ affectation.materiel.prixUnitaire|number_format(0, ',', ' ') }} MGA</td>
+                <td>{{ (affectation.materiel.prixUnitaire * affectation.quantiteMateriel)|number_format(0, ',', ' ') }} MGA</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="totaux">
+    <p>Total HT : {{ totalHT|number_format(0, ',', ' ') }} MGA</p>
+    <p>TVA (20%) : {{ tva|number_format(0, ',', ' ') }} MGA</p>
+    <p><strong>Total TTC : {{ totalTTC|number_format(0, ',', ' ') }} MGA</strong></p>
+    <p>Arrêté à la somme de : <strong>{{ montantEnLettres }}</strong> MGA</p>
+</div>
+
+</body>
+</html>
