@@ -10,7 +10,7 @@
         <div class="mb-3">
             <label for="chantier" class="form-label">Chantier</label>
             <select name="chantier" id="chantier" class="form-select" required>
-                <option value="">-- Sélectionner un chantier --</option>
+                <option value="">- Sélectionner un chantier -</option>
                 {% for chantier in chantiers %}
                     <option value="{{ chantier.id }}">{{ chantier.nom }}</option>
                 {% endfor %}

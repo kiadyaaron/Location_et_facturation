@@ -6,7 +6,10 @@
 <div class="container mt-4">
     <h1 class="mb-4">Liste des affectations</h1>
 
-    <a href="{{ path('app_affectation_new') }}" class="btn btn-success mb-3">+ Nouvelle Affectation</a>
+   <div class="d-flex justify-content-between mb-3">
+        <a href="{{ path('app_affectation_new') }}" class="btn btn-success">+ Nouvelle Affectation</a>
+        <a href="{{ path('app_facture_index') }}" class="btn btn-success">Facturation</a>
+    </div>
 
     <table class="table table-bordered table-striped">
         <thead class="table-dark">

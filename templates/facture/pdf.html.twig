@@ -54,7 +54,7 @@
 
 <p class="objet">Objet : LOCATION MATERIELS</p>
 
-<p>FACTURE MOIS DE : {{ mois|date('F')|upper }}</p>
+<p>FACTURE MOIS DE : {{ moisTexte|upper }}</p>
 
 <table>
     <thead>
@@ -81,7 +81,7 @@
     <p>Total HT : {{ totalHT|number_format(0, ',', ' ') }} MGA</p>
     <p>TVA (20%) : {{ tva|number_format(0, ',', ' ') }} MGA</p>
     <p><strong>Total TTC : {{ totalTTC|number_format(0, ',', ' ') }} MGA</strong></p>
-    <p>Arrêté à la somme de : <strong>{{ montantEnLettres }}</strong> MGA</p>
+    <p>Arrêté à la somme de : <strong>{{ montantEnLettres }}</strong></p>
 </div>
 
 </body>

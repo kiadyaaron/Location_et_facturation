@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use IntlDateFormatter;
 
 #[Route('/facture')]
 class FactureController extends AbstractController
@@ -31,9 +32,8 @@ class FactureController extends AbstractController
         ChantierRepository $chantierRepository
     ): Response {
         $chantierId = $request->request->get('chantier');
-        $moisString = $request->request->get('mois'); 
+        $moisString = $request->request->get('mois');
 
-        // Sécuriser et parser la date
         $mois = DateTimeImmutable::createFromFormat('Y-m', $moisString);
         if (!$mois) {
             $this->addFlash('error', 'Format du mois invalide.');
@@ -48,7 +48,7 @@ class FactureController extends AbstractController
 
         $affectations = $affectationRepository->findBy([
             'chantier' => $chantier,
-            'moisFacturation' => $moisString, // NOT le DateTime mais bien le string
+            'moisFacturation' => $moisString,
         ]);
 
         $totalHT = 0;
@@ -64,7 +64,16 @@ class FactureController extends AbstractController
 
         $montantEnLettres = $this->convertirEnLettres($totalTTC);
 
-        // Générer le PDF
+        $formatter = new IntlDateFormatter(
+            'fr_FR',
+            IntlDateFormatter::LONG,
+            IntlDateFormatter::NONE,
+            'Europe/Paris',
+            IntlDateFormatter::GREGORIAN,
+            'MMMM'
+        );
+        $moisTexte = $formatter->format($mois);
+
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($pdfOptions);
@@ -72,12 +81,13 @@ class FactureController extends AbstractController
         $html = $this->renderView('facture/pdf.html.twig', [
             'chantier' => $chantier,
             'mois' => $mois,
+            'moisTexte' => ucfirst($moisTexte),
             'affectations' => $affectations,
             'totalHT' => $totalHT,
             'tva' => $tva,
             'totalTTC' => $totalTTC,
             'montantEnLettres' => $montantEnLettres,
-            'facturee' => 'BASE-RME' . $mois->format('Y'),
+            'facturee' => 'FA N°001-BASE-RME-' . $mois->format('Y'),
         ]);
 
         $dompdf->loadHtml($html);

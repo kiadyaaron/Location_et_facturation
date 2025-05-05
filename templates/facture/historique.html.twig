@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historique des factures{% endblock %}
+
+{% block body %}
+<h1>Historique des factures</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Numéro</th>
+            <th>Date</th>
+            <th>Mois facturé</th>
+            <th>Chantier</th>
+            <th>PDF</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for facture in factures %}
+            <tr>
+                <td>{{ facture.numero }}</td>
+                <td>{{ facture.dateCreation|localizeddate('long', null, 'fr') }}</td>
+                <td>{{ facture.moisFacture|localizeddate('YYYY MMMM', null, 'fr') }}</td>
+                <td>{{ facture.chantier.nom }}</td>
+                <td>
+                    <form action="{{ path('app_facture_generate') }}" method="post" target="_blank" style="display:inline;">
+                        <input type="hidden" name="chantier" value="{{ facture.chantier.id }}">
+                        <input type="hidden" name="mois" value="{{ facture.moisFacture|date('Y-m') }}">
+                        <button class="btn btn-primary btn-sm">Voir PDF</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucune facture générée.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
