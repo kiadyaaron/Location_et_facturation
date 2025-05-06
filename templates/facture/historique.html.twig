@@ -19,8 +19,8 @@
         {% for facture in factures %}
             <tr>
                 <td>{{ facture.numero }}</td>
-                <td>{{ facture.dateCreation|localizeddate('long', null, 'fr') }}</td>
-                <td>{{ facture.moisFacture|localizeddate('YYYY MMMM', null, 'fr') }}</td>
+                <td>{{ facture.dateCreation|date('d/m/Y') }}</td>
+                <td>{{ facture.moisFacture|date('F Y')|capitalize }}</td>
                 <td>{{ facture.chantier.nom }}</td>
                 <td>
                     <form action="{{ path('app_facture_generate') }}" method="post" target="_blank" style="display:inline;">

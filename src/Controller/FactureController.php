@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Facture;
 use App\Entity\Chantier;
 use App\Repository\AffectationRepository;
 use App\Repository\ChantierRepository;
@@ -12,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
 use IntlDateFormatter;
 
 #[Route('/facture')]
@@ -29,7 +31,8 @@ class FactureController extends AbstractController
     public function generate(
         Request $request,
         AffectationRepository $affectationRepository,
-        ChantierRepository $chantierRepository
+        ChantierRepository $chantierRepository,
+        EntityManagerInterface $entityManager
     ): Response {
         $chantierId = $request->request->get('chantier');
         $moisString = $request->request->get('mois');
@@ -61,7 +64,6 @@ class FactureController extends AbstractController
 
         $tva = $totalHT * 0.2;
         $totalTTC = $totalHT + $tva;
-
         $montantEnLettres = $this->convertirEnLettres($totalTTC);
 
         $formatter = new IntlDateFormatter(
@@ -73,6 +75,16 @@ class FactureController extends AbstractController
             'MMMM'
         );
         $moisTexte = $formatter->format($mois);
+
+        // Création et enregistrement de la facture
+        $facture = new Facture();
+        $facture->setNumero('FA-' . strtoupper(uniqid()));
+        $facture->setDateCreation(new \DateTimeImmutable());
+        $facture->setMoisFacture($mois);
+        $facture->setChantier($chantier);
+
+        $entityManager->persist($facture);
+        $entityManager->flush();
 
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
@@ -87,7 +99,7 @@ class FactureController extends AbstractController
             'tva' => $tva,
             'totalTTC' => $totalTTC,
             'montantEnLettres' => $montantEnLettres,
-            'facturee' => 'FA N°001-BASE-RME-' . $mois->format('Y'),
+            'facturee' => $facture->getNumero(),
         ]);
 
         $dompdf->loadHtml($html);
@@ -96,7 +108,17 @@ class FactureController extends AbstractController
 
         return new Response($dompdf->output(), 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="facture.pdf"',
+            'Content-Disposition' => 'inline; filename="' . $facture->getNumero() . '.pdf"',
+        ]);
+    }
+
+    #[Route('/historique', name: 'app_facture_historique')]
+    public function historique(EntityManagerInterface $entityManager): Response
+    {
+        $factures = $entityManager->getRepository(Facture::class)->findBy([], ['dateCreation' => 'DESC']);
+
+        return $this->render('facture/historique.html.twig', [
+            'factures' => $factures,
         ]);
     }
 
