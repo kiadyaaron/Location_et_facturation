@@ -7,7 +7,9 @@
     <h1 class="mb-4">Liste des affectations</h1>
 
    <div class="d-flex justify-content-between mb-3">
+    {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_affectation_new') }}" class="btn btn-success">+ Nouvelle Affectation</a>
+    {% endif %}
         <a href="{{ path('app_facture_index') }}" class="btn btn-success">Facturation</a>
     </div>
 
@@ -20,7 +22,9 @@
                 <th>Chantier</th>
                 <th>Matériel</th>
                 <th>Qantité Matériel</th>
-                <th>Actions</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                <th>Options</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -33,7 +37,7 @@
                 <td>{{ affectation.materiel }}</td>
                 <td>{{ affectation.quantiteMateriel }}</td>
                 <td>
-                    
+                {% if is_granted('ROLE_ADMIN') %}    
                     <a href="{{ path('app_affectation_edit', {'id': affectation.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
                     <form method="post" action="{{ path('app_affectation_delete', {'id': affectation.id}) }}"
                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette affectation ?');"
@@ -42,6 +46,7 @@
                         <input type="hidden" name="_method" value="DELETE">
                         <button class="btn btn-danger btn-sm">Supprimer</button>
                     </form>
+                {% endif %}    
                 </td>
             </tr>
         {% else %}

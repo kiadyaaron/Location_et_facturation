@@ -10,7 +10,7 @@
     <body style="background-color: #f8f9fa; padding-top: 60px;">
     <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="{{ path('app_vueGen') }}">OTI</a>
+        <a class="navbar-brand" href="{% if app.user %}{{ path('app_vueGen') }}{% else %}{{ path('app_home') }}{% endif %}">OTI</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

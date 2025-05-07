@@ -21,7 +21,7 @@ class AffectationType extends AbstractType
             ->add('moisFacturation', TextType::class, [
                 'label'=> '',
                 'attr'=> [
-                    'placeholder'=> 'De format MM-YYYY (ex: 04-2025)'
+                    'placeholder'=> 'De format YYYY-MM (ex: 2025-04)'
                 ]
             ])
             ->add('chantier', EntityType::class, [

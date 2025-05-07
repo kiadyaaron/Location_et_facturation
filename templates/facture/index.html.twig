@@ -3,9 +3,42 @@
 {% block title %}Générer une facture{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1 class="mb-4">Générer une facture</h1>
 
+<style>
+    .form-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 15px; 
+        background-color: #f8f9fa;
+    }
+
+    .form-card {
+        background-color: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25); 
+        width: 100%;
+        max-width: 600px;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .form-card:hover {
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); 
+    }
+</style>    
+
+<div class="form-wrapper">
+    <div class="form-card">
+    <h2 class="mb-4">
+        {% if is_granted('ROLE_ADMIN') %}
+            Générer une facture
+        {% else %}
+            Historique des factures générées
+        {% endif %}
+    </h2>
+{% if is_granted('ROLE_ADMIN') %}
     <form method="POST" action="{{ path('app_facture_generate') }}">
         <div class="mb-3">
             <label for="chantier" class="form-label">Chantier</label>
@@ -21,8 +54,17 @@
             <label for="mois" class="form-label">Mois (ex: 2024-04)</label>
             <input type="month" name="mois" id="mois" class="form-control" required>
         </div>
-
-        <button type="submit" class="btn btn-primary">Générer la facture PDF</button>
+        <div class="mb-3">
+        <label for="responsable" class="form-label">Responsable Maintenance</label>
+        <input type="text" name="responsable" id="responsable" class="form-control">
+    </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Générer la facture PDF</button>
+        
     </form>
+{% endif %}
+
+<a href="{{ path('app_facture_historique') }}" class="btn btn-success mt-4">Historique des factures générées</a>
+</div>
 </div>
 {% endblock %}
+    

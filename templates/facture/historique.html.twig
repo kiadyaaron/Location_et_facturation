@@ -3,10 +3,11 @@
 {% block title %}Historique des factures{% endblock %}
 
 {% block body %}
+<div class="container mt-4">
 <h1>Historique des factures</h1>
 
-<table class="table">
-    <thead>
+<table class="table table-bordered table-striped">
+        <thead class="table-dark">
         <tr>
             <th>Numéro</th>
             <th>Date</th>
@@ -23,11 +24,8 @@
                 <td>{{ facture.moisFacture|date('F Y')|capitalize }}</td>
                 <td>{{ facture.chantier.nom }}</td>
                 <td>
-                    <form action="{{ path('app_facture_generate') }}" method="post" target="_blank" style="display:inline;">
-                        <input type="hidden" name="chantier" value="{{ facture.chantier.id }}">
-                        <input type="hidden" name="mois" value="{{ facture.moisFacture|date('Y-m') }}">
-                        <button class="btn btn-primary btn-sm">Voir PDF</button>
-                    </form>
+                    <a href="{{ path('app_facture_view_pdf', {id: facture.id}) }}" class="btn btn-primary btn-sm" target="_blank">Voir PDF</a>
+
                 </td>
             </tr>
         {% else %}
@@ -37,4 +35,5 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% endblock %}

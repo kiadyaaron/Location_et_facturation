@@ -27,6 +27,9 @@ class Facture
     #[ORM\JoinColumn(nullable: false)]
     private ?Chantier $chantier = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $responsableMaintenance = null;
+
     public function getId(): ?int { return $this->id; }
     public function getNumero(): ?string { return $this->numero; }
     public function setNumero(string $numero): self { $this->numero = $numero; return $this; }
@@ -39,4 +42,15 @@ class Facture
 
     public function getChantier(): ?Chantier { return $this->chantier; }
     public function setChantier(?Chantier $chantier): self { $this->chantier = $chantier; return $this; }
+
+    public function getResponsableMaintenance(): ?string
+    {
+        return $this->responsableMaintenance;
+    }
+
+    public function setResponsableMaintenance(?string $responsableMaintenance): static
+    {
+        $this->responsableMaintenance = $responsableMaintenance;
+        return $this;
+    }
 }

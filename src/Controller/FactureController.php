@@ -6,6 +6,7 @@ use App\Entity\Facture;
 use App\Entity\Chantier;
 use App\Repository\AffectationRepository;
 use App\Repository\ChantierRepository;
+use App\Repository\FactureRepository;
 use DateTimeImmutable;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use IntlDateFormatter;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/facture')]
 class FactureController extends AbstractController
@@ -27,11 +29,13 @@ class FactureController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/generate', name: 'app_facture_generate', methods: ['POST'])]
     public function generate(
         Request $request,
         AffectationRepository $affectationRepository,
         ChantierRepository $chantierRepository,
+        FactureRepository $factureRepository,
         EntityManagerInterface $entityManager
     ): Response {
         $chantierId = $request->request->get('chantier');
@@ -76,12 +80,30 @@ class FactureController extends AbstractController
         );
         $moisTexte = $formatter->format($mois);
 
-        // Création et enregistrement de la facture
+        // Génération automatique du numéro de facture
+        $lastFacture = $factureRepository->findOneBy([], ['id' => 'DESC']);
+        $lastNumber = 0;
+
+        if ($lastFacture) {
+            preg_match('/FA N°(\d+)-BASE-RME-\d{4}/', $lastFacture->getNumero(), $matches);
+            if (isset($matches[1])) {
+                $lastNumber = (int)$matches[1];
+            }
+        }
+
+        $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        $numeroFacture = 'FA N°' . $newNumber . '-BASE-RME-' . $mois->format('Y');
+
+        // Création et sauvegarde de la facture
         $facture = new Facture();
-        $facture->setNumero('FA-' . strtoupper(uniqid()));
+        $facture->setNumero($numeroFacture);
         $facture->setDateCreation(new \DateTimeImmutable());
         $facture->setMoisFacture($mois);
         $facture->setChantier($chantier);
+
+        $responsable = $request->request->get('responsable');
+        $facture->setResponsableMaintenance($responsable);
+
 
         $entityManager->persist($facture);
         $entityManager->flush();
@@ -99,7 +121,9 @@ class FactureController extends AbstractController
             'tva' => $tva,
             'totalTTC' => $totalTTC,
             'montantEnLettres' => $montantEnLettres,
-            'facturee' => $facture->getNumero(),
+            'facturee' => $numeroFacture,
+            'responsable' => $responsable,
+            'facture' => $facture,
         ]);
 
         $dompdf->loadHtml($html);
@@ -108,7 +132,7 @@ class FactureController extends AbstractController
 
         return new Response($dompdf->output(), 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $facture->getNumero() . '.pdf"',
+            'Content-Disposition' => 'inline; filename="facture.pdf"',
         ]);
     }
 
@@ -121,6 +145,68 @@ class FactureController extends AbstractController
             'factures' => $factures,
         ]);
     }
+
+    #[Route('/{id}/voir-pdf', name: 'app_facture_view_pdf', methods: ['GET'])]
+public function viewPdf(Facture $facture, AffectationRepository $affectationRepository, Request $request): Response
+{
+    $chantier = $facture->getChantier();
+    $mois = $facture->getMoisFacture();
+    $moisString = $mois->format('Y-m');
+
+    $affectations = $affectationRepository->findBy([
+        'chantier' => $chantier,
+        'moisFacturation' => $moisString,
+    ]);
+
+    $totalHT = 0;
+    foreach ($affectations as $affectation) {
+        $materiel = $affectation->getMateriel();
+        $prixUnitaire = $materiel->getPrixUnitaire();
+        $quantite = $affectation->getQuantiteMateriel();
+        $totalHT += $prixUnitaire * $quantite;
+    }
+
+    $tva = $totalHT * 0.2;
+    $totalTTC = $totalHT + $tva;
+
+    $montantEnLettres = $this->convertirEnLettres($totalTTC);
+
+    $formatter = new \IntlDateFormatter(
+        'fr_FR',
+        \IntlDateFormatter::LONG,
+        \IntlDateFormatter::NONE,
+        'Europe/Paris',
+        \IntlDateFormatter::GREGORIAN,
+        'MMMM'
+    );
+    $moisTexte = ucfirst($formatter->format($mois));
+
+    $pdfOptions = new Options();
+    $pdfOptions->set('defaultFont', 'Arial');
+    $dompdf = new Dompdf($pdfOptions);
+
+    $html = $this->renderView('facture/pdf.html.twig', [
+        'chantier' => $chantier,
+        'mois' => $mois,
+        'moisTexte' => $moisTexte,
+        'affectations' => $affectations,
+        'totalHT' => $totalHT,
+        'tva' => $tva,
+        'totalTTC' => $totalTTC,
+        'montantEnLettres' => $montantEnLettres,
+        'facturee' => $facture->getNumero(),
+        'facture' => $facture,
+    ]);
+
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    return new Response($dompdf->output(), 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="facture-'.$facture->getNumero().'.pdf"',
+    ]);
+}
 
     private function convertirEnLettres(float $montant): string
     {
