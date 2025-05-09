@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 
 #[Route('/materiel')]
 final class MaterielController extends AbstractController{
@@ -83,8 +84,15 @@ final class MaterielController extends AbstractController{
     public function delete(Request $request, Materiel $materiel, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$materiel->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($materiel);
-            $entityManager->flush();
+            
+            try {
+                $entityManager->remove($materiel);
+                $entityManager->flush();
+    
+                $this->addFlash('success', 'Matériel supprimé avec succès.');
+            } catch (ForeignKeyConstraintViolationException $e) {
+                $this->addFlash('danger', 'Vous ne pouvez pas supprimer ce matériel car il est encore affecté à un chantier.');
+            }
         }
 
         return $this->redirectToRoute('app_materiel_index', [], Response::HTTP_SEE_OTHER);

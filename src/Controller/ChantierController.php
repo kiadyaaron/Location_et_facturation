@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 
 #[Route('/chantier')]
 final class ChantierController extends AbstractController
@@ -85,8 +86,14 @@ final class ChantierController extends AbstractController
     public function delete(Request $request, Chantier $chantier, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $chantier->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($chantier);
-            $entityManager->flush();
+            try {
+                $entityManager->remove($chantier);
+                $entityManager->flush();
+    
+                $this->addFlash('success', 'Chantier supprimé avec succès.');
+            } catch (ForeignKeyConstraintViolationException $e) {
+                $this->addFlash('danger', 'Vous ne pouvez pas supprimer ce chantier car un matériel y est encore affecté.');
+            }
         }
 
         return $this->redirectToRoute('app_chantier_index', [], Response::HTTP_SEE_OTHER);
