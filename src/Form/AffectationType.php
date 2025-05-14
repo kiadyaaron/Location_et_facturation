@@ -17,6 +17,11 @@ class AffectationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+             ->add('materiel', EntityType::class, [
+                'class' => Materiel::class,
+            'choice_label' => 'libelle',
+            'placeholder' => 'Aucun materiel',
+            ])
             ->add('dureeUtilisation')
             ->add('moisFacturation', TextType::class, [
                 'label'=> '',
@@ -29,7 +34,7 @@ class AffectationType extends AbstractType
             'choice_label' => 'nom',
             'placeholder' => 'Aucun chantier',
             ])
-            
+           
         ;
     }
 
