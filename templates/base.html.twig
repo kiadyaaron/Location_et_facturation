@@ -7,13 +7,13 @@
     }
 
     .table-auto-width {
-        width: max-content; /* largeur minimale basée sur le contenu */
+        width: max-content;
         white-space: nowrap;
     }
 
     .table-auto-width th,
     .table-auto-width td {
-        white-space: nowrap; /* empêche le texte de se couper à la ligne */
+        white-space: nowrap;
         vertical-align: middle;
     }
 </style>
@@ -28,7 +28,9 @@
     <body style="background-color: #f8f9fa; padding-top: 60px;">
     <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="{% if app.user %}{{ path('app_vueGen') }}{% else %}{{ path('app_home') }}{% endif %}">OTI</a>
+        <a class="navbar-brand" href="{% if app.user %}{{ path('app_vueGen') }}{% else %}{{ path('app_home') }}{% endif %}">
+            <img src="{{ asset('images/Logo_OTI.jpg') }}" alt="Logo OTI" style="height: 40px;">
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

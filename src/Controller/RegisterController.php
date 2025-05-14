@@ -52,7 +52,6 @@ final class RegisterController extends AbstractController
                 $request
             );
             
-            $this->addFlash('success', 'Inscription réussie. Vous pouvez maintenant vous connecter.');
             return $this->redirectToRoute('app_vueGen');
             
         }
