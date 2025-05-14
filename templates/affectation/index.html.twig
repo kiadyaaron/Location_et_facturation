@@ -34,8 +34,9 @@
                 <td>{{ affectation.moisFacturation }}</td>
                 <td>{{ affectation.chantier }}</td>
                 <td>{{ affectation.materiel }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
                 <td>
-                {% if is_granted('ROLE_ADMIN') %}    
+                    
                     <a href="{{ path('app_affectation_edit', {'id': affectation.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
                     <form method="post" action="{{ path('app_affectation_delete', {'id': affectation.id}) }}"
                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette affectation ?');"
@@ -44,8 +45,9 @@
                         <input type="hidden" name="_method" value="DELETE">
                         <button class="btn btn-danger btn-sm">Supprimer</button>
                     </form>
-                {% endif %}    
+                    
                 </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
