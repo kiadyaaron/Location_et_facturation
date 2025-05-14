@@ -27,9 +27,6 @@ class Affectation
     #[ORM\Column(length: 7)] 
     private ?string $moisFacturation = null;
 
-    #[ORM\Column]
-    private ?int $QuantiteMateriel = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -79,15 +76,4 @@ class Affectation
         return $this;
     }
 
-    public function getQuantiteMateriel(): ?int
-    {
-        return $this->QuantiteMateriel;
-    }
-
-    public function setQuantiteMateriel(int $QuantiteMateriel): static
-    {
-        $this->QuantiteMateriel = $QuantiteMateriel;
-
-        return $this;
-    }
 }

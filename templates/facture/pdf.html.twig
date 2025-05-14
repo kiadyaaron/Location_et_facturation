@@ -63,10 +63,10 @@
     <thead>
         <tr>
             <th>Matériel</th>
-            <th>Quantité</th>
             <th>Code affaire</th>
-            <th>Unité</th>
             <th>Prix Unitaire</th>
+            <th>Durée d'utilisation</th>
+            <th>Unité</th>
             <th>Montant HT</th>
         </tr>
     </thead>
@@ -74,11 +74,11 @@
         {% for affectation in affectations %}
             <tr>
                 <td>{{ affectation.materiel.libelle }}</td>
-                <td>{{ affectation.quantiteMateriel }}</td>
                 <td>{{ affectation.materiel.codeAffaire }}</td>
-                <td>{{ affectation.materiel.unite }}</td>
                 <td>{{ affectation.materiel.prixUnitaire|number_format(0, ',', ' ') }} MGA</td>
-                <td>{{ (affectation.materiel.prixUnitaire * affectation.quantiteMateriel)|number_format(0, ',', ' ') }} MGA</td>
+                <td>{{ affectation.dureeUtilisation }}</td>
+                <td>{{ affectation.materiel.unite }}</td>
+                <td>{{ (affectation.materiel.prixUnitaire * affectation.dureeUtilisation)|number_format(0, ',', ' ') }} MGA</td>
             </tr>
         {% endfor %}
     </tbody>

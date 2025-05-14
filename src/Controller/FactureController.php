@@ -62,8 +62,8 @@ class FactureController extends AbstractController
         foreach ($affectations as $affectation) {
             $materiel = $affectation->getMateriel();
             $prixUnitaire = $materiel->getPrixUnitaire();
-            $quantite = $affectation->getQuantiteMateriel();
-            $totalHT += $prixUnitaire * $quantite;
+            $duree = $affectation->getDureeUtilisation();
+            $totalHT += $prixUnitaire * $duree;
         }
 
         $tva = $totalHT * 0.2;
@@ -162,8 +162,8 @@ public function viewPdf(Facture $facture, AffectationRepository $affectationRepo
     foreach ($affectations as $affectation) {
         $materiel = $affectation->getMateriel();
         $prixUnitaire = $materiel->getPrixUnitaire();
-        $quantite = $affectation->getQuantiteMateriel();
-        $totalHT += $prixUnitaire * $quantite;
+        $duree = $affectation->getDureeUtilisation();
+        $totalHT += $prixUnitaire * $duree;
     }
 
     $tva = $totalHT * 0.2;
@@ -211,6 +211,6 @@ public function viewPdf(Facture $facture, AffectationRepository $affectationRepo
     private function convertirEnLettres(float $montant): string
     {
         $fmt = new \NumberFormatter('fr_FR', \NumberFormatter::SPELLOUT);
-        return ucfirst($fmt->format(round($montant))) . ' ariary';
+        return ucfirst($fmt->format(round($montant))) . ' Ariary';
     }
 }

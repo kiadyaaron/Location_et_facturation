@@ -1,5 +1,23 @@
 <!DOCTYPE html>
 <html>
+<style>
+    .table-responsive-container {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .table-auto-width {
+        width: max-content; /* largeur minimale basée sur le contenu */
+        white-space: nowrap;
+    }
+
+    .table-auto-width th,
+    .table-auto-width td {
+        white-space: nowrap; /* empêche le texte de se couper à la ligne */
+        vertical-align: middle;
+    }
+</style>
+
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>

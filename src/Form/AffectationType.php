@@ -29,12 +29,7 @@ class AffectationType extends AbstractType
             'choice_label' => 'nom',
             'placeholder' => 'Aucun chantier',
             ])
-            ->add('materiel', EntityType::class, [
-                'class' => Materiel::class,
-            'choice_label' => 'libelle',
-            'placeholder' => 'Aucun matériel',
-            ])
-            ->add('quantiteMateriel')
+            
         ;
     }
 

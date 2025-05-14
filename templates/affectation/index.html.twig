@@ -21,7 +21,6 @@
                 <th>Mois de facturation</th>
                 <th>Chantier</th>
                 <th>Matériel</th>
-                <th>Qantité Matériel</th>
                 {% if is_granted('ROLE_ADMIN') %}
                 <th>Options</th>
                 {% endif %}
@@ -35,7 +34,6 @@
                 <td>{{ affectation.moisFacturation }}</td>
                 <td>{{ affectation.chantier }}</td>
                 <td>{{ affectation.materiel }}</td>
-                <td>{{ affectation.quantiteMateriel }}</td>
                 <td>
                 {% if is_granted('ROLE_ADMIN') %}    
                     <a href="{{ path('app_affectation_edit', {'id': affectation.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
