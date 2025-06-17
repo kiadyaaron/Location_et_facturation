@@ -20,11 +20,14 @@ class MaterielType extends AbstractType
             ->add('PrixUnitaire')
             ->add('Description')
             ->add('chantier', EntityType::class, [
-                'class' => Chantier::class,
-                'choice_label' => 'nom',
-                'placeholder' => '— Aucun chantier —',
-                'required' => false,
-            ])
+    'class' => Chantier::class,
+    'choice_label' => function ($chantier) {
+        return $chantier->getNom() . ' - ' . $chantier->getAdresse();
+    },
+    'placeholder' => '— Aucun chantier —',
+    'required' => false,
+])
+
         ;
     }
 

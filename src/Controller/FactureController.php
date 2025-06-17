@@ -40,8 +40,8 @@ class FactureController extends AbstractController
     ): Response {
         $chantierId = $request->request->get('chantier');
         $moisString = $request->request->get('mois');
-
         $mois = DateTimeImmutable::createFromFormat('Y-m', $moisString);
+
         if (!$mois) {
             $this->addFlash('error', 'Format du mois invalide.');
             return $this->redirectToRoute('app_facture_index');
@@ -53,16 +53,24 @@ class FactureController extends AbstractController
             return $this->redirectToRoute('app_facture_index');
         }
 
-        $affectations = $affectationRepository->findBy([
-            'chantier' => $chantier,
-            'moisFacturation' => $moisString,
-        ]);
+        // Chercher tous les chantiers ayant un nom similaire (ex : "Helios%")
+        $nomChantier = $chantier->getNom();
+        $chantiersSimilaires = $chantierRepository->findByNomCommencantPar($nomChantier);
+
+
+        // Fusion des affectations de tous les chantiers similaires
+        $affectations = [];
+        foreach ($chantiersSimilaires as $chantierSimilaire) {
+            $affectations = array_merge(
+                $affectations,
+                $affectationRepository->findByChantierEtMois($chantierSimilaire, $mois)
+            );
+        }
 
         $totalHT = 0;
         foreach ($affectations as $affectation) {
-            $materiel = $affectation->getMateriel();
-            $prixUnitaire = $materiel->getPrixUnitaire();
-            $duree = $affectation->getDureeUtilisation();
+            $prixUnitaire = $affectation->getMateriel()->getPrixUnitaire();
+            $duree = $affectation->getDureeUtilisation($mois);
             $totalHT += $prixUnitaire * $duree;
         }
 
@@ -70,17 +78,9 @@ class FactureController extends AbstractController
         $totalTTC = $totalHT + $tva;
         $montantEnLettres = $this->convertirEnLettres($totalTTC);
 
-        $formatter = new IntlDateFormatter(
-            'fr_FR',
-            IntlDateFormatter::LONG,
-            IntlDateFormatter::NONE,
-            'Europe/Paris',
-            IntlDateFormatter::GREGORIAN,
-            'MMMM'
-        );
-        $moisTexte = $formatter->format($mois);
+        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE, 'Europe/Paris', IntlDateFormatter::GREGORIAN, 'MMMM');
+        $moisTexte = ucfirst($formatter->format($mois));
 
-        // Génération automatique du numéro de facture
         $lastFacture = $factureRepository->findOneBy([], ['id' => 'DESC']);
         $lastNumber = 0;
 
@@ -94,35 +94,84 @@ class FactureController extends AbstractController
         $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         $numeroFacture = 'FA N°' . $newNumber . '-BASE-RME-' . $mois->format('Y');
 
-        // Création et sauvegarde de la facture
         $facture = new Facture();
         $facture->setNumero($numeroFacture);
         $facture->setDateCreation(new \DateTimeImmutable());
         $facture->setMoisFacture($mois);
-        $facture->setChantier($chantier);
-
-        $responsable = $request->request->get('responsable');
-        $facture->setResponsableMaintenance($responsable);
-
+        $facture->setChantier($chantier); // on garde le chantier sélectionné comme référence
+        $facture->setResponsableMaintenance($request->request->get('responsable'));
 
         $entityManager->persist($facture);
         $entityManager->flush();
+
+        return $this->generatePdf($facture, $affectationRepository, $moisTexte, $chantiersSimilaires);
+    }
+
+    #[Route('/historique', name: 'app_facture_historique')]
+    public function historique(EntityManagerInterface $entityManager): Response
+    {
+        $factures = $entityManager->getRepository(Facture::class)->findBy([], ['dateCreation' => 'DESC']);
+        return $this->render('facture/historique.html.twig', [
+            'factures' => $factures,
+        ]);
+    }
+
+    #[Route('/{id}/voir-pdf', name: 'app_facture_view_pdf', methods: ['GET'])]
+    public function viewPdf(Facture $facture, AffectationRepository $affectationRepository, ChantierRepository $chantierRepository): Response
+    {
+        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE, 'Europe/Paris', IntlDateFormatter::GREGORIAN, 'MMMM');
+        $moisTexte = ucfirst($formatter->format($facture->getMoisFacture()));
+
+        // Récupérer tous les chantiers avec nom similaire pour la visualisation PDF
+        $nomChantier = $facture->getChantier()->getNom();
+        $chantiersSimilaires = $chantierRepository->createQueryBuilder('c')
+            ->where('c.nom LIKE :nom')
+            ->setParameter('nom', $nomChantier . '%')
+            ->getQuery()
+            ->getResult();
+
+        return $this->generatePdf($facture, $affectationRepository, $moisTexte, $chantiersSimilaires);
+    }
+
+    private function generatePdf(Facture $facture, AffectationRepository $affectationRepository, string $moisTexte, array $chantiersSimilaires): Response
+    {
+        $mois = $facture->getMoisFacture();
+
+        // Fusionner les affectations des chantiers similaires
+        $affectations = [];
+        foreach ($chantiersSimilaires as $chantier) {
+            $affectations = array_merge(
+                $affectations,
+                $affectationRepository->findByChantierEtMois($chantier, $mois)
+            );
+        }
+
+        $totalHT = 0;
+        foreach ($affectations as $affectation) {
+            $prixUnitaire = $affectation->getMateriel()->getPrixUnitaire();
+            $duree = $affectation->getDureeUtilisation($mois);
+            $totalHT += $prixUnitaire * $duree;
+        }
+
+        $tva = $totalHT * 0.2;
+        $totalTTC = $totalHT + $tva;
+        $montantEnLettres = $this->convertirEnLettres($totalTTC);
 
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($pdfOptions);
 
         $html = $this->renderView('facture/pdf.html.twig', [
-            'chantier' => $chantier,
+            'chantier' => $facture->getChantier(),
             'mois' => $mois,
-            'moisTexte' => ucfirst($moisTexte),
+            'moisTexte' => $moisTexte,
             'affectations' => $affectations,
             'totalHT' => $totalHT,
             'tva' => $tva,
             'totalTTC' => $totalTTC,
             'montantEnLettres' => $montantEnLettres,
-            'facturee' => $numeroFacture,
-            'responsable' => $responsable,
+            'facturee' => $facture->getNumero(),
+            'responsable' => $facture->getResponsableMaintenance(),
             'facture' => $facture,
         ]);
 
@@ -132,81 +181,9 @@ class FactureController extends AbstractController
 
         return new Response($dompdf->output(), 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="facture.pdf"',
+            'Content-Disposition' => 'inline; filename="facture-' . $facture->getNumero() . '.pdf"',
         ]);
     }
-
-    #[Route('/historique', name: 'app_facture_historique')]
-    public function historique(EntityManagerInterface $entityManager): Response
-    {
-        $factures = $entityManager->getRepository(Facture::class)->findBy([], ['dateCreation' => 'DESC']);
-
-        return $this->render('facture/historique.html.twig', [
-            'factures' => $factures,
-        ]);
-    }
-
-    #[Route('/{id}/voir-pdf', name: 'app_facture_view_pdf', methods: ['GET'])]
-public function viewPdf(Facture $facture, AffectationRepository $affectationRepository, Request $request): Response
-{
-    $chantier = $facture->getChantier();
-    $mois = $facture->getMoisFacture();
-    $moisString = $mois->format('Y-m');
-
-    $affectations = $affectationRepository->findBy([
-        'chantier' => $chantier,
-        'moisFacturation' => $moisString,
-    ]);
-
-    $totalHT = 0;
-    foreach ($affectations as $affectation) {
-        $materiel = $affectation->getMateriel();
-        $prixUnitaire = $materiel->getPrixUnitaire();
-        $duree = $affectation->getDureeUtilisation();
-        $totalHT += $prixUnitaire * $duree;
-    }
-
-    $tva = $totalHT * 0.2;
-    $totalTTC = $totalHT + $tva;
-
-    $montantEnLettres = $this->convertirEnLettres($totalTTC);
-
-    $formatter = new \IntlDateFormatter(
-        'fr_FR',
-        \IntlDateFormatter::LONG,
-        \IntlDateFormatter::NONE,
-        'Europe/Paris',
-        \IntlDateFormatter::GREGORIAN,
-        'MMMM'
-    );
-    $moisTexte = ucfirst($formatter->format($mois));
-
-    $pdfOptions = new Options();
-    $pdfOptions->set('defaultFont', 'Arial');
-    $dompdf = new Dompdf($pdfOptions);
-
-    $html = $this->renderView('facture/pdf.html.twig', [
-        'chantier' => $chantier,
-        'mois' => $mois,
-        'moisTexte' => $moisTexte,
-        'affectations' => $affectations,
-        'totalHT' => $totalHT,
-        'tva' => $tva,
-        'totalTTC' => $totalTTC,
-        'montantEnLettres' => $montantEnLettres,
-        'facturee' => $facture->getNumero(),
-        'facture' => $facture,
-    ]);
-
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
-
-    return new Response($dompdf->output(), 200, [
-        'Content-Type' => 'application/pdf',
-        'Content-Disposition' => 'inline; filename="facture-'.$facture->getNumero().'.pdf"',
-    ]);
-}
 
     private function convertirEnLettres(float $montant): string
     {

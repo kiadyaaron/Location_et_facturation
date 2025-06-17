@@ -76,9 +76,9 @@
                 <td>{{ affectation.materiel.libelle }}</td>
                 <td>{{ affectation.materiel.codeAffaire }}</td>
                 <td>{{ affectation.materiel.prixUnitaire|number_format(0, ',', ' ') }} MGA</td>
-                <td>{{ affectation.dureeUtilisation }}</td>
+                <td>{{ affectation.dureeUtilisation(mois) }}</td>
                 <td>{{ affectation.materiel.unite }}</td>
-                <td>{{ (affectation.materiel.prixUnitaire * affectation.dureeUtilisation)|number_format(0, ',', ' ') }} MGA</td>
+                <td>{{ (affectation.materiel.prixUnitaire * affectation.getDureeUtilisation(mois))|number_format(0, ',', ' ') }} MGA</td>
             </tr>
         {% endfor %}
     </tbody>

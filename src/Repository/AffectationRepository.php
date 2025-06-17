@@ -3,12 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Affectation;
+use App\Entity\Chantier;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Affectation>
- */
 class AffectationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +14,22 @@ class AffectationRepository extends ServiceEntityRepository
         parent::__construct($registry, Affectation::class);
     }
 
-//    /**
-//     * @return Affectation[] Returns an array of Affectation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Retourne les affectations d’un chantier pour un mois donné.
+     */
+    public function findByChantierEtMois(Chantier $chantier, \DateTimeImmutable $mois): array
+    {
+        $debutMois = $mois->modify('first day of this month')->setTime(0, 0);
+        $finMois = $mois->modify('last day of this month')->setTime(23, 59, 59);
 
-//    public function findOneBySomeField($value): ?Affectation
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.chantier = :chantier')
+            ->andWhere('a.dateDebut <= :finMois')
+            ->andWhere('a.dateFin >= :debutMois')
+            ->setParameter('chantier', $chantier)
+            ->setParameter('debutMois', $debutMois)
+            ->setParameter('finMois', $finMois)
+            ->getQuery()
+            ->getResult();
+    }
 }
