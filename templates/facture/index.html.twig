@@ -42,16 +42,16 @@
     <form method="POST" action="{{ path('app_facture_generate') }}">
         <div class="mb-3">
             <label for="chantier" class="form-label">Chantier</label>
-            <select name="chantier" id="chantier" class="form-select" required>
-                <option value="">- Sélectionner un chantier -</option>
-                {% for chantier in chantiers %}
-                    <option value="{{ chantier.id }}">{{ chantier.nom }}</option>
-                {% endfor %}
-            </select>
+                <select name="chantier" id="chantier" class="form-select" required>
+                    <option value="">- Sélectionner un chantier -</option>
+                    {% for chantier in chantiers %}
+                        <option value="{{ chantier.id }}">{{ chantier.nom }} - {{ chantier.adresse }}</option>
+                    {% endfor %}
+                </select>
         </div>
 
         <div class="mb-3">
-            <label for="mois" class="form-label">Mois (ex: 2024-04)</label>
+            <label for="mois" class="form-label">Mois</label>
             <input type="month" name="mois" id="mois" class="form-control" required>
         </div>
         <div class="mb-3">

@@ -3,7 +3,7 @@
 {% block title %}Affectation {% endblock %}
 
 {% block body %}
-<div class="container mt-4">
+<div style="margin-left: 14px;">
     <h1 class="mb-4">Liste des affectations</h1>
 
    <div class="d-flex justify-content-between mb-3">
@@ -17,10 +17,12 @@
         <thead class="table-dark">
             <tr>
                 <th>Id</th>
-                <th>Duree d'utilisation</th>
-                <th>Mois de facturation</th>
-                <th>Chantier</th>
                 <th>Matériel</th>
+                <th>Duree d'utilisation</th>
+                <th>Date début</th>
+                <th>Date fin</th>
+                <th>Chantier</th>
+                <th>Adresse du chantier</th>
                 {% if is_granted('ROLE_ADMIN') %}
                 <th>Options</th>
                 {% endif %}
@@ -30,10 +32,12 @@
         {% for affectation in affectations %}
             <tr>
                 <td>{{ affectation.id }}</td>
-                <td>{{ affectation.dureeUtilisation }}</td>
-                <td>{{ affectation.moisFacturation }}</td>
-                <td>{{ affectation.chantier }}</td>
                 <td>{{ affectation.materiel }}</td>
+                <td>{{ affectation.dureeUtilisationTotale }} jours</td>
+                <td>{{ affectation.dateDebut|date('d/m/Y') }}</td>
+                <td>{{ affectation.dateFin|date('d/m/Y') }}</td>
+                <td>{{ affectation.chantier.nom }}</td>
+                <td>{{ affectation.chantier.adresse }}</td>
                 {% if is_granted('ROLE_ADMIN') %}
                 <td>
                     

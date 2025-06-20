@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AffectationRepository;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AffectationRepository::class)]
 class Affectation
@@ -13,33 +13,47 @@ class Affectation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Chantier::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Chantier $chantier = null;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $dateDebut = null;
 
-    #[ORM\ManyToOne(targetEntity: Materiel::class)]
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $dateFin = null;
+
+    #[ORM\ManyToOne(inversedBy: 'affectations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Materiel $materiel = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $dureeUtilisation = null;
+    #[ORM\ManyToOne(inversedBy: 'affectations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Chantier $chantier = null;
 
-    #[ORM\Column(length: 7)] 
-    private ?string $moisFacturation = null;
+    #[ORM\Column(type: 'boolean')]
+    private bool $isValidated = false;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getChantier(): ?Chantier
+    public function getDateDebut(): ?\DateTimeImmutable
     {
-        return $this->chantier;
+        return $this->dateDebut;
     }
 
-    public function setChantier(?Chantier $chantier): static
+    public function setDateDebut(\DateTimeImmutable $dateDebut): self
     {
-        $this->chantier = $chantier;
+        $this->dateDebut = $dateDebut;
+        return $this;
+    }
+
+    public function getDateFin(): ?\DateTimeImmutable
+    {
+        return $this->dateFin;
+    }
+
+    public function setDateFin(\DateTimeImmutable $dateFin): self
+    {
+        $this->dateFin = $dateFin;
         return $this;
     }
 
@@ -48,32 +62,72 @@ class Affectation
         return $this->materiel;
     }
 
-    public function setMateriel(?Materiel $materiel): static
+    public function setMateriel(?Materiel $materiel): self
     {
         $this->materiel = $materiel;
         return $this;
     }
 
-    public function getDureeUtilisation(): ?int
+    public function getChantier(): ?Chantier
     {
-        return $this->dureeUtilisation;
+        return $this->chantier;
     }
 
-    public function setDureeUtilisation(int $duree): static
+    public function setChantier(?Chantier $chantier): self
     {
-        $this->dureeUtilisation = $duree;
+        $this->chantier = $chantier;
         return $this;
     }
 
-    public function getMoisFacturation(): ?string
+    public function isValidated(): bool
     {
-        return $this->moisFacturation;
+        return $this->isValidated;
     }
 
-    public function setMoisFacturation(string $moisFacturation): static
-    {
-        $this->moisFacturation = $moisFacturation;
-        return $this;
+public function setIsValidated(bool $isValidated): static
+{
+    $this->isValidated = $isValidated;
+    return $this;
+}
+
+    /**
+     * Calcule la durée d'utilisation dans un mois donné.
+     */
+    public function getDureeUtilisation(\DateTimeInterface $mois): int
+{
+    $debutAffectation = $this->getDateDebut();
+    $finAffectation = $this->getDateFin();
+
+    if (!$debutAffectation || !$finAffectation) {
+        return 0;
     }
+
+    // Normalisation des dates au format "00:00:00"
+    $debutAffectation = (new \DateTimeImmutable($debutAffectation->format('Y-m-d')))->setTime(0, 0);
+    $finAffectation = (new \DateTimeImmutable($finAffectation->format('Y-m-d')))->setTime(0, 0);
+
+    $debutMois = (new \DateTimeImmutable($mois->format('Y-m-01')))->setTime(0, 0);
+    $finMois = $debutMois->modify('last day of this month')->setTime(0, 0);
+
+    $debutUtilisation = $debutAffectation > $debutMois ? $debutAffectation : $debutMois;
+    $finUtilisation = $finAffectation < $finMois ? $finAffectation : $finMois;
+
+    if ($finUtilisation < $debutUtilisation) {
+        return 0;
+    }
+
+    return (int) $finUtilisation->diff($debutUtilisation)->days + 1;
+}
+
+
+
+    public function getDureeUtilisationTotale(): int
+{
+    if (!$this->dateDebut || !$this->dateFin) {
+        return 0;
+    }
+
+    return $this->dateFin->diff($this->dateDebut)->days + 1;
+}
 
 }

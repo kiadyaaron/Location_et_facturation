@@ -39,7 +39,6 @@
 <br>
 
 <div class="client-info">
-    <div></div> 
     <div style="position: absolute; top: 100px; right: 0; text-align: right;">
         {{ chantier.nom|upper }}<br>
         {{ chantier.adresse }}<br>
@@ -59,35 +58,54 @@
 
 <p><u>Facture mois de :</u> {{ moisTexte|upper }}</p>
 
-<table style="style= width: 100%; font-size: 10px; border-collapse: collapse;">
+<table style="width: 100%; font-size: 10px; border-collapse: collapse; border: 1px solid black;">
     <thead>
         <tr>
-            <th>Matériel</th>
-            <th>Code affaire</th>
-            <th>Prix Unitaire</th>
-            <th>Durée d'utilisation</th>
-            <th>Unité</th>
-            <th>Montant HT</th>
+            <th style="width: 30%; border: 1px solid black;">Libellé</th>
+            <th style="width: 15%; border: 1px solid black;">Codes Affaires</th>
+            <th style="width: 10%; border: 1px solid black;">Unité</th>
+            <th style="width: 10%; border: 1px solid black;">Qté</th>
+            <th style="width: 15%; border: 1px solid black;">Prix Unit.</th>
+            <th style="width: 20%; border: 1px solid black;">Montant en MGA</th>
         </tr>
     </thead>
     <tbody>
         {% for affectation in affectations %}
             <tr>
-                <td>{{ affectation.materiel.libelle }}</td>
-                <td>{{ affectation.materiel.codeAffaire }}</td>
-                <td>{{ affectation.materiel.prixUnitaire|number_format(0, ',', ' ') }} MGA</td>
-                <td>{{ affectation.dureeUtilisation }}</td>
-                <td>{{ affectation.materiel.unite }}</td>
-                <td>{{ (affectation.materiel.prixUnitaire * affectation.dureeUtilisation)|number_format(0, ',', ' ') }} MGA</td>
+                <td style="text-align: left; border: 1px solid black;">{{ affectation.materiel.libelle }}</td>
+                <td style="border: 1px solid black;">{{ affectation.materiel.codeAffaire }}</td>
+                <td style="border: 1px solid black;">{{ affectation.materiel.unite }}</td>
+                <td style="text-align: right; border: 1px solid black;">{{ affectation.dureeUtilisation(mois) }}</td>
+                <td style="text-align: right; border: 1px solid black;">
+                    {{ affectation.materiel.prixUnitaire|number_format(0, ',', ' ') }}
+                </td>
+                <td style="text-align: right; border: 1px solid black;">
+                    {{ (affectation.materiel.prixUnitaire * affectation.getDureeUtilisation(mois))|number_format(0, ',', ' ') }}
+                </td>
             </tr>
         {% endfor %}
+        <tr>
+            <td colspan="5" style="text-align: right; border: 1px solid black;"><strong>MONTANT HTVA</strong> <br/> <strong>TVA 20%</strong></td>
+            <td style="text-align: right; border: 1px solid black;"><strong>{{ totalHT|number_format(0, ',', ' ') }}</strong> <br/> <strong>{{ tva|number_format(0, ',', ' ') }}</strong></td>
+        </tr>
+        <tr>
+            <td colspan="5" style="text-align: right; border: 1px solid black;"><strong>MONTANT TTC</strong></td>
+            <td style="text-align: right; border: 1px solid black;"><strong>{{ totalTTC|number_format(0, ',', ' ') }}</strong></td>
+        </tr>
     </tbody>
 </table>
 
-<div class="totaux">
-    <p><strong>Total HT :</strong> {{ totalHT|number_format(0, ',', ' ') }} MGA  ||<strong> TVA (20%) :</strong> {{ tva|number_format(0, ',', ' ') }} MGA  || <strong> Total TTC : </strong>{{ totalTTC|number_format(0, ',', ' ') }} MGA</p>
-    <p><strong>Arrêté à la somme de : {{ montantEnLettres }}</strong></p>
-</div>
+<!-- Ligne "Arrêté à la somme de :" -->
+<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <tr>
+        <td style="border: none; width: 30%; font-weight: bold;">Arrêté à la somme de :</td>
+        <td style="border: 1px solid black; text-align: center; font-weight: bold; text-transform: uppercase;">
+            {{ montantEnLettres }}
+        </td>
+    </tr>
+</table>
+
+
 
 <div class="bank-details" style="font-size: 7px; text-align: center; margin-top: 0px;">
     <p style="text-align: left;"><strong><u>Coordonnées bancaires:<u></strong></p>

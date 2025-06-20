@@ -1,0 +1,31 @@
+{# Partial header #}
+<header class="main-header">
+  <div class="container header-inner">
+    <a href="{{ path('homepage') }}" class="logo" aria-label="Accueil OTI">
+      <img src="{{ asset('build/images/logo-oti.svg') }}" alt="Logo OTI">
+    </a>
+
+    <nav class="nav-primary" role="navigation" aria-label="Menu principal">
+      <button class="nav-toggle" aria-expanded="false" aria-label="Ouvrir le menu">☰</button>
+      <ul class="nav-list">
+        <li><a href="{{ path('app_chantier_index') }}">Chantiers</a></li>
+        <li><a href="{{ path('app_materiel_index') }}">Matériel</a></li>
+        <li><a href="{{ path('app_affectation_index') }}">Affectations</a></li>
+      </ul>
+    </nav>
+
+    <div class="user-menu">
+      <span class="user-name">Bonjour {{ app.user.firstname }}</span>
+      <div class="dropdown">
+        <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          <img src="{{ asset('build/images/avatars/' ~ app.user.avatar) }}"
+               alt="Avatar de {{ app.user.firstname }}" class="avatar">
+        </button>
+        <ul class="dropdown-menu">
+          <li><a href="{{ path('profile_edit') }}">Mon profil</a></li>
+          <li><a href="{{ path('logout') }}">Déconnexion</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>

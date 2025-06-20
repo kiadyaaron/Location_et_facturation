@@ -5,10 +5,9 @@ namespace App\Form;
 use App\Entity\Affectation;
 use App\Entity\Chantier;
 use App\Entity\Materiel;
-use Doctrine\DBAL\Types\TextType as TypesTextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,25 +16,28 @@ class AffectationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-             ->add('materiel', EntityType::class, [
-                'class' => Materiel::class,
-            'choice_label' => 'libelle',
-            'placeholder' => 'Aucun materiel',
+            ->add('dateDebut', DateTimeType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de début',
             ])
-            ->add('dureeUtilisation')
-            ->add('moisFacturation', TextType::class, [
-                'label'=> '',
-                'attr'=> [
-                    'placeholder'=> 'De format YYYY-MM (ex: 2025-04)'
-                ]
+            ->add('dateFin', DateTimeType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de fin',
+            ])
+            ->add('materiel', EntityType::class, [
+                'class' => Materiel::class,
+                'choice_label' => 'libelle',
+                'label' => 'Matériel',
+                'placeholder' => 'Sélectionner un matériel',
             ])
             ->add('chantier', EntityType::class, [
-                'class' => Chantier::class,
-            'choice_label' => 'nom',
-            'placeholder' => 'Aucun chantier',
-            ])
-           
-        ;
+    'class' => Chantier::class,
+    'choice_label' => function ($chantier) {
+        return $chantier->getNom() . ' - ' . $chantier->getAdresse();
+    },
+    'placeholder' => '— Aucun chantier —',
+    'required' => false,
+]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
