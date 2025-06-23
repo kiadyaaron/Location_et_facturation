@@ -44,4 +44,20 @@ class AffectationRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult();
 }
+    public function search(string $term): array
+{
+    $qb = $this->createQueryBuilder('a')
+        ->leftJoin('a.chantier', 'c')
+        ->addSelect('c')
+        ->leftJoin('a.materiel', 'm')
+        ->addSelect('m')
+        ->where('LOWER(m.Libelle) LIKE :term')
+        ->orWhere('LOWER(c.nom) LIKE :term')
+        ->orWhere('LOWER(c.Adresse) LIKE :term')
+        ->andWhere('a.isValidated = true')
+        ->setParameter('term', '%' . strtolower($term) . '%');
+
+    return $qb->getQuery()->getResult() ?? [];
+}
+
 }

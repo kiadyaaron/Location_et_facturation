@@ -19,10 +19,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Route('/affectation')]
 final class AffectationController extends AbstractController{
     #[Route(name: 'app_affectation_index', methods: ['GET'])]
-    public function index(AffectationRepository $affectationRepository): Response
+    public function index(Request $request, AffectationRepository $affectationRepository): Response
     {
+        $search = $request->query->get('search');
+
+    if ($search) {
+        $affectations = $affectationRepository->search($search);
+    } else {
+        $affectations = $affectationRepository->findAllValidated();
+    }
         return $this->render('affectation/index.html.twig', [
-            'affectations' => $affectationRepository->findAllValidated(),
+            'affectations' => $affectations,
         ]);
     }
 

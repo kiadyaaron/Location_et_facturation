@@ -40,6 +40,35 @@ class Chantier
     #[ORM\OneToMany(mappedBy: 'chantier', targetEntity: Materiel::class, orphanRemoval: true)]
     private Collection $materiels;
 
+    #[ORM\OneToMany(mappedBy: 'chantier', targetEntity: Affectation::class, orphanRemoval: true)]
+    private Collection $affectations;
+
+public function getAffectations(): Collection
+{
+    return $this->affectations;
+}
+
+public function addAffectation(Affectation $affectation): static
+{
+    if (!$this->affectations->contains($affectation)) {
+        $this->affectations[] = $affectation;
+        $affectation->setChantier($this);
+    }
+
+    return $this;
+}
+
+public function removeAffectation(Affectation $affectation): static
+{
+    if ($this->affectations->removeElement($affectation)) {
+        if ($affectation->getMateriel() === $this) {
+            $affectation->setMateriel(null);
+        }
+    }
+
+    return $this;
+}
+
     public function __toString(): string
     {
         return $this->Nom ?? '';
@@ -48,6 +77,7 @@ class Chantier
     public function __construct()
     {
         $this->materiels = new ArrayCollection();
+        $this->affectations = new ArrayCollection();
     }
 
     public function getId(): ?int

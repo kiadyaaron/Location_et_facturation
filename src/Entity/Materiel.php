@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\MaterielRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Chantier;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: MaterielRepository::class)]
 class Materiel
@@ -32,6 +34,40 @@ class Materiel
     #[ORM\ManyToOne(targetEntity: Chantier::class, inversedBy: 'materiels')]
     #[ORM\JoinColumn(nullable: true)] 
     private ?Chantier $chantier = null;
+
+    #[ORM\OneToMany(mappedBy: 'materiel', targetEntity: Affectation::class, orphanRemoval: true)]
+    private Collection $affectations;
+
+    public function __construct()
+{
+    $this->affectations = new ArrayCollection();
+}
+
+public function getAffectations(): Collection
+{
+    return $this->affectations;
+}
+
+public function addAffectation(Affectation $affectation): static
+{
+    if (!$this->affectations->contains($affectation)) {
+        $this->affectations[] = $affectation;
+        $affectation->setMateriel($this);
+    }
+
+    return $this;
+}
+
+public function removeAffectation(Affectation $affectation): static
+{
+    if ($this->affectations->removeElement($affectation)) {
+        if ($affectation->getMateriel() === $this) {
+            $affectation->setMateriel(null);
+        }
+    }
+
+    return $this;
+}
 
     public function __toString(): string
     {
