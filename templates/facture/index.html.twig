@@ -45,7 +45,7 @@
                 <select name="chantier" id="chantier" class="form-select" required>
                     <option value="">- Sélectionner un chantier -</option>
                     {% for chantier in chantiers %}
-                        <option value="{{ chantier.id }}">{{ chantier.nom }} - {{ chantier.adresse }}</option>
+                        <option value="{{ chantier.id }}">{{ chantier.nom }} {{ chantier.adresse }}</option>
                     {% endfor %}
                 </select>
         </div>

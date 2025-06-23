@@ -18,7 +18,7 @@ final class MaterielController extends AbstractController{
     #[Route(name: 'app_materiel_index', methods: ['GET'])]
     public function index(Request $request, MaterielRepository $materielRepository): Response
     {
-        $search = $request->query->get('search'); // <-- search vient de GET (pas POST)
+        $search = $request->query->get('search'); 
         
         if ($search) {
             $materiels = $materielRepository->search($search);

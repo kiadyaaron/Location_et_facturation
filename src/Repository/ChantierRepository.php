@@ -32,4 +32,20 @@ class ChantierRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function search(string $term): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->where('LOWER(c.nom) LIKE :term')
+            ->orWhere('LOWER(c.CodeChantier) LIKE :term')
+            ->orWhere('LOWER(c.Adresse) LIKE :term')
+            ->orWhere('LOWER(c.NIF) LIKE :term')
+            ->orWhere('LOWER(c.STAT) LIKE :term')
+            ->orWhere('LOWER(c.ContactClient) LIKE :term')
+            ->orWhere('LOWER(c.ResponsableChantier) LIKE :term') 
+            ->setParameter('term', '%' . strtolower($term) . '%')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -30,6 +30,17 @@ class Affectation
     #[ORM\Column(type: 'boolean')]
     private bool $isValidated = false;
 
+    public function isValidated(): bool
+{
+    return $this->isValidated;
+}
+
+public function setIsValidated(bool $isValidated): static
+{
+    $this->isValidated = $isValidated;
+    return $this;
+}
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,16 +90,7 @@ class Affectation
         return $this;
     }
 
-    public function isValidated(): bool
-    {
-        return $this->isValidated;
-    }
 
-public function setIsValidated(bool $isValidated): static
-{
-    $this->isValidated = $isValidated;
-    return $this;
-}
 
     /**
      * Calcule la durée d'utilisation dans un mois donné.

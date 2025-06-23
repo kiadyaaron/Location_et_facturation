@@ -17,6 +17,10 @@ class AffectationRepository extends ServiceEntityRepository
     /**
      * Retourne les affectations d’un chantier pour un mois donné.
      */
+
+    /**
+     * Retourne les affectations d’un chantier pour un mois donné.
+     */
     public function findByChantierEtMois(Chantier $chantier, \DateTimeImmutable $mois): array
     {
         $debutMois = $mois->modify('first day of this month')->setTime(0, 0);

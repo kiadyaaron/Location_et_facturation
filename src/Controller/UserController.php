@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/admin/user/{id}/edit', name: 'admin_user_edit')]
+    #[Route('/user/{id}/edit', name: 'admin_user_edit')]
     public function edit(
         User $user,
         Request $request,

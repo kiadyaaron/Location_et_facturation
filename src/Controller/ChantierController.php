@@ -19,7 +19,7 @@ final class ChantierController extends AbstractController
     #[Route(name: 'app_chantier_index', methods: ['GET', 'POST'])]
     public function index(Request $request, ChantierRepository $chantierRepository): Response
     {
-    $search = $request->request->get('search');
+    $search = $request->query->get('search');
 
     if ($search) {
         $chantiers = $chantierRepository->search($search);

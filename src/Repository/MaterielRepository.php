@@ -49,7 +49,7 @@ class MaterielRepository extends ServiceEntityRepository
             ->orWhere('LOWER(m.CodeAffaire) LIKE :term')
             ->orWhere('LOWER(m.Unite) LIKE :term')
             ->orWhere('LOWER(m.Description) LIKE :term')
-            ->orWhere('LOWER(c.Nom) LIKE :term') 
+            ->orWhere('LOWER(c.nom) LIKE :term') 
             ->setParameter('term', '%' . strtolower($term) . '%')
         ;
 

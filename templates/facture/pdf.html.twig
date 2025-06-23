@@ -63,25 +63,21 @@
         <tr>
             <th style="width: 30%; border: 1px solid black;">Libellé</th>
             <th style="width: 15%; border: 1px solid black;">Codes Affaires</th>
-            <th style="width: 10%; border: 1px solid black;">Unité</th>
-            <th style="width: 10%; border: 1px solid black;">Qté</th>
             <th style="width: 15%; border: 1px solid black;">Prix Unit.</th>
+            <th style="width: 10%; border: 1px solid black;">Durée</th>
+            <th style="width: 10%; border: 1px solid black;">Unité</th>
             <th style="width: 20%; border: 1px solid black;">Montant en MGA</th>
         </tr>
     </thead>
     <tbody>
         {% for affectation in affectations %}
             <tr>
-                <td style="text-align: left; border: 1px solid black;">{{ affectation.materiel.libelle }}</td>
-                <td style="border: 1px solid black;">{{ affectation.materiel.codeAffaire }}</td>
-                <td style="border: 1px solid black;">{{ affectation.materiel.unite }}</td>
-                <td style="text-align: right; border: 1px solid black;">{{ affectation.dureeUtilisation(mois) }}</td>
-                <td style="text-align: right; border: 1px solid black;">
-                    {{ affectation.materiel.prixUnitaire|number_format(0, ',', ' ') }}
-                </td>
-                <td style="text-align: right; border: 1px solid black;">
-                    {{ (affectation.materiel.prixUnitaire * affectation.getDureeUtilisation(mois))|number_format(0, ',', ' ') }}
-                </td>
+                <td>{{ affectation.materiel.libelle }}</td>
+                <td>{{ affectation.materiel.codeAffaire }}</td>
+                <td>{{ affectation.materiel.prixUnitaire|number_format(0, ',', ' ') }} MGA</td>
+                <td>{{ affectation.dureeUtilisation(mois) }}</td>
+                <td>{{ affectation.materiel.unite }}</td>
+                <td>{{ (affectation.materiel.prixUnitaire * affectation.getDureeUtilisation(mois))|number_format(0, ',', ' ') }} MGA</td>
             </tr>
         {% endfor %}
         <tr>
