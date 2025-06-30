@@ -13,7 +13,7 @@
             <th>Date</th>
             <th>Mois facturé</th>
             <th>Chantier</th>
-            <th>PDF</th>
+            <th>Options</th>
         </tr>
     </thead>
     <tbody>
@@ -25,7 +25,13 @@
                 <td>{{ facture.chantier.nom }}</td>
                 <td>
                     <a href="{{ path('app_facture_view_pdf', {id: facture.id}) }}" class="btn btn-primary btn-sm" target="_blank">Voir PDF</a>
-
+                    <form method="post" action="{{ path('app_facture_delete', {'id': facture.id}) }}"
+                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette facture ?');"
+                          style="display:inline-block">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ facture.id) }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}

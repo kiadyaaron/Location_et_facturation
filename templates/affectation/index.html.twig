@@ -13,7 +13,7 @@
 {% endfor %}
 
 <div style="margin-left: 14px; margin-right: 14px">
-    <h1 class="mb-4">Liste des affectations</h1>
+    <h1 style="margin-top: 10px;">Liste des affectations</h1>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
     {% if is_granted('ROLE_ADMIN') %}
@@ -33,7 +33,6 @@
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
-                <th>Id</th>
                 <th>Matériel</th>
                 <th>Duree d'utilisation</th>
                 <th>Date début</th>
@@ -48,7 +47,6 @@
         <tbody>
         {% for affectation in affectations %}
             <tr>
-                <td>{{ affectation.id }}</td>
                 <td>{{ affectation.materiel }}</td>
                 <td>{{ affectation.dureeUtilisationTotale }} jours</td>
                 <td>{{ affectation.dateDebut|date('d/m/Y') }}</td>

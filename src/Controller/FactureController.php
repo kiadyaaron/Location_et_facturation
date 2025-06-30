@@ -133,6 +133,17 @@ class FactureController extends AbstractController
         return $this->generatePdf($facture, $affectationRepository, $moisTexte, $chantiersSimilaires);
     }
 
+    #[Route('/{id}', name: 'app_facture_delete', methods: ['POST'])]
+    public function delete(Request $request, Facture $facture, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$facture->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($facture);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_facture_historique', [], Response::HTTP_SEE_OTHER);
+    }
+
     private function generatePdf(Facture $facture, AffectationRepository $affectationRepository, string $moisTexte, array $chantiersSimilaires): Response
     {
         $mois = $facture->getMoisFacture();
