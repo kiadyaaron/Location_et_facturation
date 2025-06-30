@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use IntlDateFormatter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Attribute\Security;
 
 #[Route('/facture')]
 class FactureController extends AbstractController
@@ -29,7 +30,7 @@ class FactureController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
     #[Route('/generate', name: 'app_facture_generate', methods: ['POST'])]
     public function generate(
         Request $request,
@@ -132,7 +133,7 @@ class FactureController extends AbstractController
 
         return $this->generatePdf($facture, $affectationRepository, $moisTexte, $chantiersSimilaires);
     }
-
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
     #[Route('/{id}', name: 'app_facture_delete', methods: ['POST'])]
     public function delete(Request $request, Facture $facture, EntityManagerInterface $entityManager): Response
     {

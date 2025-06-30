@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\Security;
 
 #[Route('/affectation')]
 final class AffectationController extends AbstractController{
@@ -33,7 +34,7 @@ final class AffectationController extends AbstractController{
         ]);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
     #[Route('/new', name: 'app_affectation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
@@ -96,7 +97,7 @@ public function validateAffectation(Affectation $affectation, EntityManagerInter
         ]);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
     #[Route('/{id}/edit', name: 'app_affectation_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Affectation $affectation, EntityManagerInterface $entityManager): Response
     {
@@ -115,7 +116,7 @@ public function validateAffectation(Affectation $affectation, EntityManagerInter
         ]);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
     #[Route('/{id}', name: 'app_affectation_delete', methods: ['POST'])]
     public function delete(Request $request, Affectation $affectation, EntityManagerInterface $entityManager): Response
     {
