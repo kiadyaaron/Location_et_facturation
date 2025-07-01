@@ -11,11 +11,28 @@
         white-space: nowrap;
     }
 
-    .table-auto-width th,
+    .table-auto-width th{
+        background-color: rgb(0, 110, 255) !important;
+        color: white !important;
+        vertical-align: middle;
+        font-size: 16px;
+    }
     .table-auto-width td {
         white-space: nowrap;
         vertical-align: middle;
     }
+
+    .custom-orange {
+        background-color: #ff8800 !important;
+        color: white !important;
+        border-color: #ff8800 !important;
+    }
+
+    .custom-orange:hover {
+        background-color: #e07000 !important;
+        border-color: #e07000 !important;
+    }
+
 </style>
 
     <head>
@@ -25,23 +42,23 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}{% endblock %}
     </head>
-    <body style="background-color: #f8f9fa; padding-top: 60px;">
+    <body style="background-color:#f8f9fa; padding-top: 70px;">
     <header>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <nav class="navbar navbar-expand-md navbar-light fixed-top" style="background-color:#f8f9fa;">
         <a class="navbar-brand" href="{% if app.user %}{{ path('app_vueGen') }}{% else %}{{ path('app_home') }}{% endif %}">
-            <img src="{{ asset('images/Logo_OTI.jpg') }}" alt="Logo OTI" style="height: 40px;">
+            <img src="{{ asset('images/Logo_OTI.jpg') }}" alt="Logo OTI" style="height: 60px;">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             
-            <div class="ms-auto d-flex align-items-center navbar-item-custom">    
+            <div class="ms-auto d-flex align-items-center navbar-item-custom">  {# rgb(248, 248, 248)  #}
         {% if app.user %}
-            <a href="{{path('app_logout')}}">Déconnexion</a>
+            <a href="{{ path('app_logout') }}" class="btn custom-orange">Déconnexion</a>
         {% else %}
-            <a href="{{path('app_login')}}">Connexion</a> |
-            <a href="{{path('app_register')}}">Inscription</a>
+            <a href="{{path('app_login')}}" class="btn custom-orange" style="margin-right:5px;">Connexion</a> 
+            <a href="{{path('app_register')}}" class="btn custom-orange">Inscription</a>
         {% endif %}  
     </div>
         </div>
