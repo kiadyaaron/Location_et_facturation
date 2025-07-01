@@ -32,7 +32,7 @@
                 <th>Adresse</th>
                 <th>NIF</th>
                 <th>STAT</th>
-                <th>Contact client</th>
+                <th>e-mail</th>
                 <th>Responsable chantier</th>
                 {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN') %}
                 <th>Options</th>
@@ -47,7 +47,7 @@
                 <td>{{ chantier.adresse }}</td>
                 <td>{{ chantier.NIF }}</td>
                 <td>{{ chantier.STAT }}</td>
-                <td>{{ chantier.ContactClient }}</td>
+                <td>{{ chantier.email }}</td>
                 <td>{{ chantier.ResponsableChantier }}</td>
                 {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN') %}
                 <td>

@@ -31,8 +31,8 @@ class Chantier
     #[ORM\Column(length: 255)]
     private ?string $STAT = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $ContactClient = null;
+    #[ORM\Column(length: 180)]
+    private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $ResponsableChantier = null;
@@ -146,14 +146,15 @@ public function removeAffectation(Affectation $affectation): static
         return $this;
     }
 
-    public function getContactClient(): ?string
+    public function getEmail(): ?string
     {
-        return $this->ContactClient;
+        return $this->email;
     }
 
-    public function setContactClient(string $ContactClient): static
+    public function setEmail(string $email): self
     {
-        $this->ContactClient = $ContactClient;
+        $this->email = $email;
+
         return $this;
     }
 

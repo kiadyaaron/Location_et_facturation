@@ -55,7 +55,7 @@ final class AffectationController extends AbstractController{
 
     $email = (new Email())
         ->from('aaronkiady@gmail.com')
-        ->to('ramijoroaaaron@gmail.com')
+        ->to($affectation->getChantier()?->getEmail() ?? 'default@email.com')
         ->subject('Validation d\'une nouvelle affectation')
         ->html($this->renderView('emails/validation_affectation.html.twig', [
             'affectation' => $affectation,

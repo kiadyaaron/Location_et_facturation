@@ -28,8 +28,8 @@ class ChantierType extends AbstractType
             ->add('STAT', TextType::class, [
                 'label' => 'STAT',
             ])
-            ->add('ContactClient', TextType::class, [
-                'label' => 'Contact du client',
+            ->add('email', TextType::class, [
+                'label' => 'e-mail',
             ])
             ->add('ResponsableChantier', TextType::class, [
                 'label' => 'Responsable du chantier',
