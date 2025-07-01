@@ -17,8 +17,8 @@ class Materiel
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Libelle = null;
-
+    private ?string $libelle = null;
+    
     #[ORM\Column(length: 255)]
     private ?string $CodeAffaire = null;
 
@@ -26,10 +26,13 @@ class Materiel
     private ?string $Unite = null;
 
     #[ORM\Column(type: 'integer')]
-    private ?string $PrixUnitaire = null;
+    private ?int $PrixUnitaire = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Description = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $kilometrage = null;
 
     #[ORM\ManyToOne(targetEntity: Chantier::class, inversedBy: 'materiels')]
     #[ORM\JoinColumn(nullable: true)] 
@@ -81,12 +84,12 @@ public function removeAffectation(Affectation $affectation): static
 
     public function getLibelle(): ?string
     {
-        return $this->Libelle;
+        return $this->libelle;
     }
 
-    public function setLibelle(string $Libelle): static
+    public function setLibelle(?string $libelle): self
     {
-        $this->Libelle = $Libelle;
+        $this->libelle = $libelle;
         return $this;
     }
 
@@ -142,6 +145,17 @@ public function removeAffectation(Affectation $affectation): static
     public function setChantier(?Chantier $chantier): static
     {
         $this->chantier = $chantier;
+        return $this;
+    }
+
+    public function getKilometrage(): ?int
+    {
+        return $this->kilometrage;
+    }
+
+    public function setKilometrage(?int $kilometrage): static
+    {
+        $this->kilometrage = $kilometrage;
         return $this;
     }
 }

@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Importer le kilométrage d'un matériel{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .import-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .import-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #343a40;
+        }
+
+        .form-control, .btn {
+            font-size: 16px;
+        }
+
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="import-container">
+    <h2>Importer les kilométrages des matériels depuis un fichier Excel</h2>
+
+    {% for msg in app.flashes('success') %}
+        <div class="alert alert-success">{{ msg }}</div>
+    {% endfor %}
+    {% for msg in app.flashes('error') %}
+        <div class="alert alert-danger">{{ msg }}</div>
+    {% endfor %}
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        {{ form_row(form.excelFile) }}
+        <button class="btn btn-primary w-100 mt-3">Importer</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

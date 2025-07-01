@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Materiel;
 use App\Form\MaterielType;
 use App\Repository\MaterielRepository;
+use App\Form\ImportKilometrageType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Attribute\Security;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 #[Route('/materiel')]
 final class MaterielController extends AbstractController{
@@ -48,6 +50,54 @@ final class MaterielController extends AbstractController{
 
         return $this->render('materiel/new.html.twig', [
             'materiel' => $materiel,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/import', name: 'app_import_kilometrage')]
+    public function importKilometrage(Request $request, EntityManagerInterface $em, MaterielRepository $repo): Response
+    {
+        $form = $this->createForm(ImportKilometrageType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('excelFile')->getData();
+
+            try {
+                $spreadsheet = IOFactory::load($file->getPathname());
+                $sheet = $spreadsheet->getActiveSheet();
+                $rows = $sheet->toArray();
+
+                $updated = 0;
+                foreach (array_slice($rows, 1) as $row) {
+                    $libelle = trim((string) $row[0]);
+                    $kilometrage = trim((string) $row[1]);
+
+                    if (!$libelle || !$kilometrage || !is_numeric($kilometrage)) {
+                        continue;
+                    }
+
+                    $materiel = $repo->findOneBy(['libelle' => $libelle]);
+
+                    if ($materiel) {
+                        $materiel->setKilometrage((int) $kilometrage);
+                        $em->persist($materiel);
+                        $updated++;
+                    } else {
+                        $this->addFlash('error', "Matériel introuvable : '$libelle'");
+                    }
+                }
+
+                $em->flush();
+                $this->addFlash('success', "$updated matériels mis à jour.");
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de l’import : ' . $e->getMessage());
+            }
+
+            return $this->redirectToRoute('app_materiel_index');
+        }
+
+        return $this->render('import/import_kilometrage.html.twig', [
             'form' => $form,
         ]);
     }
@@ -97,4 +147,5 @@ final class MaterielController extends AbstractController{
 
         return $this->redirectToRoute('app_materiel_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }

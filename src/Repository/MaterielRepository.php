@@ -55,4 +55,9 @@ class MaterielRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findOneByLibelle(string $libelle): ?Materiel
+    {
+        return $this->findOneBy(['libelle' => $libelle]);
+    }
 }
