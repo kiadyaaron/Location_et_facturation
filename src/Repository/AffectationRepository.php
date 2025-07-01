@@ -51,7 +51,7 @@ class AffectationRepository extends ServiceEntityRepository
         ->addSelect('c')
         ->leftJoin('a.materiel', 'm')
         ->addSelect('m')
-        ->where('LOWER(m.Libelle) LIKE :term')
+        ->where('LOWER(m.libelle) LIKE :term')
         ->orWhere('LOWER(c.nom) LIKE :term')
         ->orWhere('LOWER(c.Adresse) LIKE :term')
         ->andWhere('a.isValidated = true')

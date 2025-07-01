@@ -14,7 +14,7 @@ class MaterielType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Libelle')
+            ->add('libelle')
             ->add('CodeAffaire')
             ->add('Unite')
             ->add('PrixUnitaire')

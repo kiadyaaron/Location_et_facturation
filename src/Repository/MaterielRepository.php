@@ -45,7 +45,7 @@ class MaterielRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('m')
             ->leftJoin('m.chantier', 'c')
             ->addSelect('c')
-            ->where('LOWER(m.Libelle) LIKE :term')
+            ->where('LOWER(m.libelle) LIKE :term')
             ->orWhere('LOWER(m.CodeAffaire) LIKE :term')
             ->orWhere('LOWER(m.Unite) LIKE :term')
             ->orWhere('LOWER(m.Description) LIKE :term')
