@@ -37,22 +37,46 @@ class AffectationTemp
         $this->token = bin2hex(random_bytes(32));
     }
 
-    // Getters et setters...
+    public function getId(): ?int { 
+        return $this->id; 
+    }
+    public function getToken(): ?string {
+        return $this->token; 
+    }
 
-    public function getId(): ?int { return $this->id; }
-    public function getToken(): ?string { return $this->token; }
+    public function getDateDebut(): ?\DateTimeImmutable {
+        return $this->dateDebut; 
+    }
+    public function setDateDebut(\DateTimeImmutable $dateDebut): static { 
+        $this->dateDebut = $dateDebut; 
+        return $this;
+    }
 
-    public function getDateDebut(): ?\DateTimeImmutable { return $this->dateDebut; }
-    public function setDateDebut(\DateTimeImmutable $dateDebut): static { $this->dateDebut = $dateDebut; return $this; }
+    public function getDateFin(): ?\DateTimeImmutable { 
+        return $this->dateFin; 
+    }
+    public function setDateFin(\DateTimeImmutable $dateFin): static { 
+        $this->dateFin = $dateFin;
+        return $this; 
+    }
 
-    public function getDateFin(): ?\DateTimeImmutable { return $this->dateFin; }
-    public function setDateFin(\DateTimeImmutable $dateFin): static { $this->dateFin = $dateFin; return $this; }
+    public function getChantier(): ?Chantier { 
+        return $this->chantier; 
+    }
+    public function setChantier(?Chantier $chantier): static {
+        $this->chantier = $chantier; 
+        return $this; 
+    }
 
-    public function getChantier(): ?Chantier { return $this->chantier; }
-    public function setChantier(?Chantier $chantier): static { $this->chantier = $chantier; return $this; }
+    public function getMateriel(): ?Materiel {
+        return $this->materiel; 
+    }
+    public function setMateriel(?Materiel $materiel): static { 
+        $this->materiel = $materiel; 
+        return $this; 
+    }
 
-    public function getMateriel(): ?Materiel { return $this->materiel; }
-    public function setMateriel(?Materiel $materiel): static { $this->materiel = $materiel; return $this; }
-
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getCreatedAt(): \DateTimeImmutable {
+        return $this->createdAt; 
+    }
 }
