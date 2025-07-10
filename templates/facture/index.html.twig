@@ -32,13 +32,13 @@
 <div class="form-wrapper">
     <div class="form-card">
     <h2 class="mb-4">
-        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN') %}
+        {% if is_granted('ROLE_ADMIN') %}
             Générer une facture
         {% else %}
             Historique des factures générées
         {% endif %}
     </h2>
-{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN') %}
+{% if is_granted('ROLE_ADMIN') %}
     <form method="POST" action="{{ path('app_facture_generate') }}">
         <div class="mb-3">
             <label for="chantier" class="form-label">Chantier</label>

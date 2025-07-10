@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    router.request_context.host: '192.168.2.82'
+    router.request_context.host: '41.188.51.242'
     router.request_context.scheme: 'http'
 
 services:

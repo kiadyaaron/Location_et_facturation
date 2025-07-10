@@ -2,7 +2,7 @@
 framework:
     secret: '%env(APP_SECRET)%'
     router:
-        default_uri: 'http://192.168.2.82:8000'
+        default_uri: 'http://41.188.51.242:8000'
 
     # Note that the session will be started ONLY if you read or write from it.
     session: true

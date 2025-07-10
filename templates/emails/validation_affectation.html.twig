@@ -1,16 +1,14 @@
-<p>Bonjour,<br/>
-Veuillez valider la location du matériel "{{ affectation.materiel.libelle }}", dans votre chantier {{ affectation.chantier.nom }}</p><br/>
+<p style="font-size: 16px; font-family: Arial, sans-serif; color: #333;">
+    Bonjour,<br><br>
+    Nous vous prions de bien vouloir <a href="{{ validationUrl }}">
+   valider la location
+</a> du matériel 
+    <strong>"{{ affectation.materiel.libelle }}"</strong> affecté à votre chantier 
+    <strong>"{{ affectation.chantier.nom }}"</strong>.<br><br>
+    Nous vous remercions par avance pour votre réactivité.
+</p>
 
-<a href="{{ validationUrl }}"
-   style="
-        display: inline-block;
-        background-color: green;
-        color: white;
-        text-decoration: none;
-        padding: 12px 24px;
-        font-size: 16px;
-        border-radius: 30px;
-        font-family: Arial, sans-serif;
-   ">
-   Valider cette location
-</a>
+<p style="font-size: 16px; font-family: Arial, sans-serif; color: #333;">
+    Cordialement,<br>
+    OTI
+</p>

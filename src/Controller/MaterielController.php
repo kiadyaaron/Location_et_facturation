@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
-use Symfony\Bundle\FrameworkBundle\Attribute\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 #[Route('/materiel')]
@@ -33,7 +33,7 @@ final class MaterielController extends AbstractController{
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_materiel_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -54,6 +54,7 @@ final class MaterielController extends AbstractController{
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/import', name: 'app_import_kilometrage')]
     public function importKilometrage(Request $request, EntityManagerInterface $em, MaterielRepository $repo): Response
     {
@@ -110,7 +111,7 @@ final class MaterielController extends AbstractController{
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/edit', name: 'app_materiel_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Materiel $materiel, EntityManagerInterface $entityManager): Response
     {
@@ -129,7 +130,7 @@ final class MaterielController extends AbstractController{
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_materiel_delete', methods: ['POST'])]
     public function delete(Request $request, Materiel $materiel, EntityManagerInterface $entityManager): Response
     {

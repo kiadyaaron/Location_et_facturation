@@ -30,7 +30,7 @@ class FactureController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/generate', name: 'app_facture_generate', methods: ['POST'])]
     public function generate(
         Request $request,
@@ -54,12 +54,12 @@ class FactureController extends AbstractController
             return $this->redirectToRoute('app_facture_index');
         }
 
-        // Chercher tous les chantiers ayant un nom similaire (ex : "Helios%")
+        //Chantier avec nom similaire na tsy mitovy adresse ary
         $nomChantier = $chantier->getNom();
         $chantiersSimilaires = $chantierRepository->findByNomCommencantPar($nomChantier);
 
 
-        // Fusion des affectations de tous les chantiers similaires
+        //Fusion des affectations de tous les chantiers avec nom similaires
         $affectations = [];
         foreach ($chantiersSimilaires as $chantierSimilaire) {
             $affectations = array_merge(
@@ -133,7 +133,7 @@ class FactureController extends AbstractController
 
         return $this->generatePdf($facture, $affectationRepository, $moisTexte, $chantiersSimilaires);
     }
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_facture_delete', methods: ['POST'])]
     public function delete(Request $request, Facture $facture, EntityManagerInterface $entityManager): Response
     {

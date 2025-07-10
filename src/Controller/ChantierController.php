@@ -33,7 +33,7 @@ final class ChantierController extends AbstractController
     ]);
 }
 
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_chantier_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -62,7 +62,7 @@ final class ChantierController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/edit', name: 'app_chantier_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Chantier $chantier, EntityManagerInterface $entityManager): Response
     {
@@ -81,7 +81,7 @@ final class ChantierController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN')")]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_chantier_delete', methods: ['POST'])]
     public function delete(Request $request, Chantier $chantier, EntityManagerInterface $entityManager): Response
     {

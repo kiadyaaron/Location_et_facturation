@@ -27,8 +27,7 @@ class MaterielType extends AbstractType
     'placeholder' => '— Aucun chantier —',
     'required' => false,
 ])
-
-        ;
+    ->add('kilometrage');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
