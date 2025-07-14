@@ -12,7 +12,9 @@
     {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_affectation_new') }}" class="btn btn-success">+ Nouvelle Affectation</a>
     {% endif %}
+    {% if not is_granted('ROLE_SUPER_ADMIN') %}
         <a href="{{ path('app_facture_index') }}" class="btn custom-orange">Facturation</a>
+    {% endif %}
 
         <form method="GET" class="d-flex p-2 border rounded" style="max-width: 400px;">
     <input type="text" name="search" class="form-control me-2 border-0"
