@@ -31,6 +31,9 @@ class AffectationTemp
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column(type: 'integer')]
+    private int $panne = 0;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -79,4 +82,15 @@ class AffectationTemp
     public function getCreatedAt(): \DateTimeImmutable {
         return $this->createdAt; 
     }
+
+    public function getPanne(): int
+{
+    return $this->panne;
+}
+
+public function setPanne(int $panne): static
+{
+    $this->panne = $panne;
+    return $this;
+}
 }

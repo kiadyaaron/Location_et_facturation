@@ -93,6 +93,7 @@ class AffectationController extends AbstractController
         $affectation->setChantier($temp->getChantier());
         $affectation->setMateriel($temp->getMateriel());
         $affectation->setIsValidated(true);
+        $affectation->setPanne($temp->getPanne());
 
         $em->persist($affectation);
         $em->remove($temp); // Supprime la demande temporaire

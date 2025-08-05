@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class AffectationType extends AbstractType
 {
@@ -29,6 +30,10 @@ class AffectationType extends AbstractType
                 'choice_label' => 'libelle',
                 'label' => 'Matériel',
                 'placeholder' => 'Sélectionner un matériel',
+            ])
+            ->add('panne', IntegerType::class, [
+                'label' => 'Jours de panne',
+                'data' => 0,
             ])
             ->add('chantier', EntityType::class, [
     'class' => Chantier::class,

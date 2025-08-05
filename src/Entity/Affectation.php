@@ -30,6 +30,9 @@ class Affectation
     #[ORM\Column(type: 'boolean')]
     private bool $isValidated = false;
 
+    #[ORM\Column(type: 'integer')]
+    private int $panne = 0;
+
     public function isValidated(): bool
 {
     return $this->isValidated;
@@ -90,6 +93,17 @@ public function setIsValidated(bool $isValidated): static
         return $this;
     }
 
+    public function getPanne(): int
+    {
+        return $this->panne;
+    }
+
+    public function setPanne(int $panne): static
+    {
+        $this->panne = $panne;
+        return $this;
+    }
+
 
 
     /**
@@ -124,12 +138,16 @@ public function setIsValidated(bool $isValidated): static
 
 
     public function getDureeUtilisationTotale(): int
-{
-    if (!$this->dateDebut || !$this->dateFin) {
+    {
+        if (!$this->dateDebut || !$this->dateFin) {
         return 0;
+        }
+
+        $duree = $this->dateFin->diff($this->dateDebut)->days + 1;
+        $duree -= $this->panne; // On retire la panne
+
+        return max($duree, 0); // On évite d’avoir un résultat négatif
     }
 
-    return $this->dateFin->diff($this->dateDebut)->days + 1;
-}
 
 }

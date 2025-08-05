@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Chantier;
 use App\Entity\Materiel;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class AffectationTempType extends AbstractType
 {
@@ -25,6 +26,10 @@ class AffectationTempType extends AbstractType
             ->add('materiel', EntityType::class, [
                 'class' => Materiel::class,
                 'choice_label' => 'libelle'
+            ])
+            ->add('panne', IntegerType::class, [
+                'label' => 'Jours de panne',
+                'data' => 0,
             ]);
     }
 

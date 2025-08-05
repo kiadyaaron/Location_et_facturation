@@ -33,6 +33,7 @@
                 <th>Date début</th>
                 <th>Date fin</th>
                 <th>Chantier</th>
+                <th>Panne</th>
                 <th>Adresse du chantier</th>
                 {% if is_granted('ROLE_ADMIN') %}
                 <th>Options</th>
@@ -47,6 +48,7 @@
                 <td>{{ affectation.dateDebut|date('d/m/Y') }}</td>
                 <td>{{ affectation.dateFin|date('d/m/Y') }}</td>
                 <td>{{ affectation.chantier.nom }}</td>
+                <td>{{ affectation.panne }} jours</td>
                 <td>{{ affectation.chantier.adresse }}</td>
                 {% if is_granted('ROLE_ADMIN') %}
                 <td>
