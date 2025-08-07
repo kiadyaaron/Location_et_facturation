@@ -76,7 +76,7 @@ class AffectationController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[IsGranted('ROLE_DIRECTEUR')]
     #[Route('/validate/{token}', name: 'app_affectation_validate')]
     public function validateAffectation(
         string $token,
@@ -157,7 +157,7 @@ class AffectationController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[IsGranted('ROLE_DIRECTEUR')]
     #[Route('/validate-edit/{token}', name: 'app_affectation_validate_edit')]
     public function validateEditAffectation(
         string $token,

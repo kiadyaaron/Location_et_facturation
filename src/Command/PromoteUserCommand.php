@@ -41,11 +41,11 @@ class PromoteUserCommand extends Command
         }
 
         #$user->setRoles(['ROLE_ADMIN']);
-        #$user->setRoles(['ROLE_SUPER_ADMIN']);
+        #$user->setRoles(['ROLE_DIRECTEUR']);
         $user->setRoles(['ROLE_IP']);
         $this->entityManager->flush();
 
-        $output->writeln("<info> $email a maintenant le rôle ROLE_ADMIN.</info>");
+        $output->writeln("<info>Rôle de $email changé.</info>");
         return Command::SUCCESS;
     }
 }
