@@ -139,7 +139,7 @@ class AffectationController extends AbstractController
             $email = (new Email())
                 ->from($user->getEmail())
                 ->to($affectationTemp->getChantier()?->getEmail())
-                ->subject('Validation d\'une location de matériel')
+                ->subject('Validation de modification d\'une affectation')
                 ->html($this->renderView('emails/modification_affectation.html.twig', [
                     'affectation' => $affectationTemp,
                     'validationUrl' => $validationUrl,
