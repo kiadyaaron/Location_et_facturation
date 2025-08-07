@@ -13,32 +13,35 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/user/{id}/edit', name: 'admin_user_edit')]
-    public function edit(
-        User $user,
-        Request $request,
-        EntityManagerInterface $em,
-        UserPasswordHasherInterface $passwordHasher
-    ): Response {
-        $form = $this->createForm(UserEditType::class, $user);
-        $form->handleRequest($request);
+    #[Route('/user/edit', name: 'admin_user_edit')]
+public function edit(
+    Request $request,
+    EntityManagerInterface $em,
+    UserPasswordHasherInterface $passwordHasher
+): Response {
+    /** @var \App\Entity\User $user */
+    $user = $this->getUser();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $newPassword = $form->get('password')->getData();
-            if ($newPassword) {
-                $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
-                $user->setPassword($hashedPassword);
-            }
+    $form = $this->createForm(UserEditType::class, $user);
+    $form->handleRequest($request);
 
-            $em->flush();
-
-            $this->addFlash('success', 'Utilisateur modifié avec succès.');
-            return $this->redirectToRoute('app_default');
+    if ($form->isSubmitted() && $form->isValid()) {
+        $newPassword = $form->get('password')->getData();
+        if ($newPassword) {
+            $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+            $user->setPassword($hashedPassword);
         }
 
-        return $this->render('admin/user/edit.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user,
-        ]);
+        $em->flush();
+
+        $this->addFlash('success', 'Utilisateur modifié avec succès.');
+        return $this->redirectToRoute('app_default');
     }
+
+    return $this->render('admin/user/edit.html.twig', [
+        'form' => $form->createView(),
+        'user' => $user,
+    ]);
+}
+
 }

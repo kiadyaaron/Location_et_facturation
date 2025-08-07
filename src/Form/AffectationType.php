@@ -32,7 +32,7 @@ class AffectationType extends AbstractType
                 'placeholder' => 'Sélectionner un matériel',
             ])
             ->add('panne', IntegerType::class, [
-                'label' => 'Jours de panne',
+                'label' => 'Nombre de jours de la panne',
                 'data' => 0,
             ])
             ->add('chantier', EntityType::class, [

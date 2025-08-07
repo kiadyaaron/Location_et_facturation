@@ -144,9 +144,9 @@ public function setIsValidated(bool $isValidated): static
         }
 
         $duree = $this->dateFin->diff($this->dateDebut)->days + 1;
-        $duree -= $this->panne; // On retire la panne
+        $duree -= $this->panne; 
 
-        return max($duree, 0); // On évite d’avoir un résultat négatif
+        return max($duree, 0); 
     }
 
 

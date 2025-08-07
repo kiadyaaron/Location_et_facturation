@@ -1,0 +1,14 @@
+<p style="font-size: 16px; font-family: Arial, sans-serif; color: #333;">
+    Bonjour,<br><br>
+    Nous vous prions de bien vouloir <a href="{{ validationUrl }}">
+        valider la modification
+    </a> de l'affectation du matériel 
+    <strong>"{{ affectation.materiel.libelle }}"</strong> au chantier 
+    <strong>"{{ affectation.chantier.nom }}"</strong>, prévue du {{ affectation.dateDebut }} au {{ affectation.dateFin }}.<br><br>
+    Cette modification intervient suite à une panne ayant entraîné une indisponibilité de <strong>{{ affectation.panne }} jours</strong> du matériel concerné.<br><br>
+    Nous vous remercions par avance pour votre compréhension et votre réactivité.
+</p>
+
+<p style="font-size: 16px; font-family: Arial, sans-serif; color: #333;">
+    Cordialement<br>
+</p>

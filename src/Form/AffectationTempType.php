@@ -28,7 +28,7 @@ class AffectationTempType extends AbstractType
                 'choice_label' => 'libelle'
             ])
             ->add('panne', IntegerType::class, [
-                'label' => 'Jours de panne',
+                'label' => 'Nombre de jours de la panne',
                 'data' => 0,
             ]);
     }

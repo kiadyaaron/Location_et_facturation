@@ -34,6 +34,9 @@ class AffectationTemp
     #[ORM\Column(type: 'integer')]
     private int $panne = 0;
 
+    #[ORM\ManyToOne]
+    private ?Affectation $affectationOriginale = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -84,13 +87,24 @@ class AffectationTemp
     }
 
     public function getPanne(): int
-{
-    return $this->panne;
-}
+    {
+        return $this->panne;
+    }
 
-public function setPanne(int $panne): static
-{
-    $this->panne = $panne;
-    return $this;
-}
+    public function setPanne(int $panne): static
+    {
+        $this->panne = $panne;
+        return $this;
+    }
+
+    public function getAffectationOriginale(): ?Affectation
+    {
+        return $this->affectationOriginale;
+    }
+
+    public function setAffectationOriginale(?Affectation $affectationOriginale): static
+    {
+        $this->affectationOriginale = $affectationOriginale;
+        return $this;
+    }
 }

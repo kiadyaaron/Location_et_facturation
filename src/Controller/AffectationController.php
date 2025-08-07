@@ -53,9 +53,11 @@ class AffectationController extends AbstractController
                 'token' => $affectationTemp->getToken()
             ], UrlGeneratorInterface::ABSOLUTE_URL);
 
+            /** @var \App\Entity\User $user */
+            $user = $this->getUser();
             $email = (new Email())
-                ->from('aaronkiady@gmail.com')
-                ->to($affectationTemp->getChantier()?->getEmail() ?? 'ramijoroaaaron@gmail.com')
+                ->from($user->getEmail())
+                ->to($affectationTemp->getChantier()?->getEmail())
                 ->subject('Validation d\'une location de matériel')
                 ->html($this->renderView('emails/validation_affectation.html.twig', [
                     'affectation' => $affectationTemp,
@@ -96,7 +98,7 @@ class AffectationController extends AbstractController
         $affectation->setPanne($temp->getPanne());
 
         $em->persist($affectation);
-        $em->remove($temp); // Supprime la demande temporaire
+        $em->remove($temp);
         $em->flush();
 
         $this->addFlash('success', 'Affectation validée et enregistrée.');
@@ -105,28 +107,81 @@ class AffectationController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/edit', name: 'app_affectation_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Affectation $affectation, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(AffectationTempType::class, $affectation);
+    public function edit(
+        Request $request,
+        Affectation $affectation,
+        EntityManagerInterface $em,
+        MailerInterface $mailer,
+        UrlGeneratorInterface $urlGenerator
+    ): Response {
+        $affectationTemp = new AffectationTemp();
+        $affectationTemp
+            ->setAffectationOriginale($affectation)
+            ->setDateDebut($affectation->getDateDebut())
+            ->setDateFin($affectation->getDateFin())
+            ->setChantier($affectation->getChantier())
+            ->setMateriel($affectation->getMateriel())
+            ->setPanne($affectation->getPanne());
+
+        $form = $this->createForm(AffectationTempType::class, $affectationTemp);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $em->persist($affectationTemp);
+            $em->flush();
+
+            $validationUrl = $urlGenerator->generate('app_affectation_validate_edit', [
+                'token' => $affectationTemp->getToken()
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            /** @var \App\Entity\User $user */
+            $user = $this->getUser();
+            $email = (new Email())
+                ->from($user->getEmail())
+                ->to($affectationTemp->getChantier()?->getEmail())
+                ->subject('Validation d\'une location de matériel')
+                ->html($this->renderView('emails/modification_affectation.html.twig', [
+                    'affectation' => $affectationTemp,
+                    'validationUrl' => $validationUrl,
+                ]));
+
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Un lien de validation pour modification a été envoyé par e-mail.');
             return $this->redirectToRoute('app_affectation_index');
         }
 
         return $this->render('affectation/edit.html.twig', [
-            'affectation' => $affectation,
             'form' => $form,
+            'affectation' => $affectation,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_affectation_show', methods: ['GET'])]
-    public function show(Affectation $affectation): Response
-    {
-        return $this->render('affectation/show.html.twig', [
-            'affectation' => $affectation,
-        ]);
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route('/validate-edit/{token}', name: 'app_affectation_validate_edit')]
+    public function validateEditAffectation(
+        string $token,
+        EntityManagerInterface $em,
+        AffectationTempRepository $affectationTempRepo
+    ): Response {
+        $temp = $affectationTempRepo->findOneBy(['token' => $token]);
+
+        if (!$temp || !$temp->getAffectationOriginale()) {
+            throw $this->createNotFoundException("Lien invalide ou expiré.");
+        }
+
+        $affectation = $temp->getAffectationOriginale();
+        $affectation->setDateDebut($temp->getDateDebut());
+        $affectation->setDateFin($temp->getDateFin());
+        $affectation->setChantier($temp->getChantier());
+        $affectation->setMateriel($temp->getMateriel());
+        $affectation->setPanne($temp->getPanne());
+
+        $em->remove($temp);
+        $em->flush();
+
+        $this->addFlash('success', 'Modification validée et enregistrée.');
+        return $this->redirectToRoute('app_affectation_index');
     }
 
     #[IsGranted('ROLE_ADMIN')]

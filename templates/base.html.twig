@@ -50,10 +50,11 @@
             
             <div class="ms-auto d-flex align-items-center navbar-item-custom">  {# rgb(248, 248, 248)  #}
         {% if app.user %}
+            <a href="{{ path('admin_user_edit') }}" class="btn custom-orange" style="margin-right:5px;">Mon compte</a>
             <a href="{{ path('app_logout') }}" class="btn custom-orange">Déconnexion</a>
         {% else %}
             <a href="{{path('app_login')}}" class="btn custom-orange" style="margin-right:5px;">Connexion</a> 
-            <a href="{{path('app_register')}}" class="btn custom-orange">Inscription</a>
+            {#<a href="{{path('app_register')}}" class="btn custom-orange">Inscription</a>#}
         {% endif %}  
     </div>
         </div>
