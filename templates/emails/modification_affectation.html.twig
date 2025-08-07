@@ -4,7 +4,7 @@
         valider la modification
     </a> de l'affectation du matériel 
     <strong>"{{ affectation.materiel.libelle }}"</strong> au chantier 
-    <strong>"{{ affectation.chantier.nom }}"</strong>, prévue du {{ affectation.dateDebut }} au {{ affectation.dateFin }}.<br><br>
+    <strong>"{{ affectation.chantier.nom }}"</strong>, prévue du {{ affectation.dateDebut|date('d/m/Y') }} au {{ affectation.dateFin|date('d/m/Y') }}.<br><br>
     Cette modification intervient suite à une panne ayant entraîné une indisponibilité de <strong>{{ affectation.panne }} jours</strong> du matériel concerné.<br><br>
     Nous vous remercions par avance pour votre compréhension et votre réactivité.
 </p>

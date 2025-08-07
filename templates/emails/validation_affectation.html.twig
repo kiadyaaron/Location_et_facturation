@@ -4,7 +4,8 @@
         valider la location
     </a> du matériel 
     <strong>"{{ affectation.materiel.libelle }}"</strong> affecté à votre chantier 
-    <strong>"{{ affectation.chantier.nom }}"</strong>, pour la période allant du {{ affectation.dateDebut }} au {{ affectation.dateFin }}.<br><br>
+    <strong>"{{ affectation.chantier.nom }}"</strong>, pour la période allant du 
+    {{ affectation.dateDebut|date('d/m/Y') }} au {{ affectation.dateFin|date('d/m/Y') }}.<br><br>
     Nous vous remercions par avance pour votre réactivité.
 </p>
 
