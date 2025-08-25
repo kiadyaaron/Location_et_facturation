@@ -16,6 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Route('/affectation')]
 class AffectationController extends AbstractController
@@ -33,7 +34,7 @@ class AffectationController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_IP')")]
     #[Route('/new', name: 'app_affectation_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
@@ -105,7 +106,7 @@ class AffectationController extends AbstractController
         return $this->redirectToRoute('app_affectation_index');
     }
 
-    #[IsGranted('ROLE_ADMIN')]
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_IP')")]
     #[Route('/{id}/edit', name: 'app_affectation_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
