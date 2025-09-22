@@ -29,7 +29,8 @@
         STAT: 77396 11 2024 0 10536<br>
         CF: 0150053/DGI-L<br>
         Tél-Fax: 020 22 323 48<br>
-        e-mail: 
+        e-mail: <br>
+        Capital social: 2 000 000Ar
     </div>
     <div style="position: absolute; top: 75px; right: 0; text-align: right;">
         Antananarivo, le {{ "now"|date('d/m/Y') }}
@@ -81,12 +82,12 @@
             </tr>
         {% endfor %}
         <tr>
-            <td colspan="5" style="text-align: right; border: 1px solid black;"><strong>MONTANT HTVA</strong> <br/> <strong>TVA 20%</strong></td>
-            <td style="text-align: right; border: 1px solid black;"><strong>{{ totalHT|number_format(0, ',', ' ') }}</strong> <br/> <strong>{{ tva|number_format(0, ',', ' ') }}</strong></td>
+            <td colspan="5" style="text-align: right; border: 1px solid black;"><strong>MONTANT HTVA</strong> </td>
+            <td style="text-align: right; border: 1px solid black;"><strong>{{ totalHT|number_format(0, ',', ' ') }}</strong> </td>
         </tr>
         <tr>
             <td colspan="5" style="text-align: right; border: 1px solid black;"><strong>MONTANT TTC</strong></td>
-            <td style="text-align: right; border: 1px solid black;"><strong>{{ totalTTC|number_format(0, ',', ' ') }}</strong></td>
+            <td style="text-align: right; border: 1px solid black;"><strong>{{ totalHT|number_format(0, ',', ' ') }}</strong></td>
         </tr>
     </tbody>
 </table>
@@ -125,7 +126,7 @@
             <td><strong>46</strong></td>
         </tr>
     </table>
-    <p style="text-align: left; margin-top: 5px;"><strong>Échéance :</strong> 30 jours à la réception de la facture</p>
+    <p style="text-align: left; margin-top: 5px;">Entreprise non assujettie à la TVA – assujettie à l’Impôt Synthétique (IS)<br><strong>Échéance :</strong> 30 jours à la réception de la facture</p>
 </div>
 
 <div style="position: absolute; bottom: 130px; right: 40px; font-size: 10px;">

@@ -16,5 +16,21 @@ class AffectationTempRepository extends ServiceEntityRepository
         parent::__construct($registry, AffectationTemp::class);
     }
 
-    // Tu peux ajouter ici des méthodes personnalisées si nécessaire
+     // src/Repository/AffectationTempRepository.php
+
+public function chevauchement(AffectationTemp $affectation): bool
+{
+    $qb = $this->createQueryBuilder('a');
+    $qb->select('COUNT(a.id)')
+        ->where('a.materiel = :materiel')
+        ->andWhere('a.id != :id OR :id IS NULL')
+        ->andWhere('a.dateDebut <= :dateFin')
+        ->andWhere('a.dateFin >= :dateDebut')
+        ->setParameter('materiel', $affectation->getMateriel())
+        ->setParameter('dateDebut', $affectation->getDateDebut())
+        ->setParameter('dateFin', $affectation->getDateFin())
+        ->setParameter('id', $affectation->getId());
+
+    return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+}
 }

@@ -16,6 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Route('/affectation')]
 class AffectationController extends AbstractController
@@ -33,19 +34,31 @@ class AffectationController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
-    #[Route('/new', name: 'app_affectation_new', methods: ['GET', 'POST'])]
-    public function new(
-        Request $request,
-        EntityManagerInterface $em,
-        MailerInterface $mailer,
-        UrlGeneratorInterface $urlGenerator
-    ): Response {
-        $affectationTemp = new AffectationTemp();
-        $form = $this->createForm(AffectationTempType::class, $affectationTemp);
-        $form->handleRequest($request);
+   #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_IP')")]
+#[Route('/new', name: 'app_affectation_new', methods: ['GET', 'POST'])]
+public function new(
+    Request $request,
+    EntityManagerInterface $em,
+    MailerInterface $mailer,
+    UrlGeneratorInterface $urlGenerator,
+    AffectationRepository $affectationRepository,
+    AffectationTempRepository $affectationTempRepository
+): Response {
+    $affectationTemp = new AffectationTemp();
+    $form = $this->createForm(AffectationTempType::class, $affectationTemp);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Vérification chevauchement avec les affectations validées
+        if ($affectationRepository->chevauchement($affectationTemp)) {
+            $this->addFlash('error', 'Ce matériel est déjà affecté à un autre chantier sur cette période.');
+            return $this->redirectToRoute('app_affectation_index');
+        }
+        // Vérification chevauchement avec les affectations temporaires
+    if ($affectationTempRepository->chevauchement($affectationTemp)) {
+        $this->addFlash('error', 'Une demande d\'affectation est déjà en cours pour ce matériel sur cette période.');
+        return $this->redirectToRoute('app_affectation_index');
+    }
             $em->persist($affectationTemp);
             $em->flush();
 
@@ -53,11 +66,18 @@ class AffectationController extends AbstractController
                 'token' => $affectationTemp->getToken()
             ], UrlGeneratorInterface::ABSOLUTE_URL);
 
+            /*$validationUrl = preg_replace(
+			    '#http://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|rme.local):8000#',
+			    'http://41.188.51.242:8000',
+			    $validationUrl
+			);*/
+
             /** @var \App\Entity\User $user */
             $user = $this->getUser();
             $email = (new Email())
                 ->from($user->getEmail())
                 ->to($affectationTemp->getChantier()?->getEmail())
+                //->cc('tiavina.rakotondrazaka@oti.mg','kanto@oti.mg')
                 ->subject('Validation d\'une location de matériel')
                 ->html($this->renderView('emails/validation_affectation.html.twig', [
                     'affectation' => $affectationTemp,
@@ -105,28 +125,34 @@ class AffectationController extends AbstractController
         return $this->redirectToRoute('app_affectation_index');
     }
 
-    #[IsGranted('ROLE_ADMIN')]
-    #[Route('/{id}/edit', name: 'app_affectation_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Request $request,
-        Affectation $affectation,
-        EntityManagerInterface $em,
-        MailerInterface $mailer,
-        UrlGeneratorInterface $urlGenerator
-    ): Response {
-        $affectationTemp = new AffectationTemp();
-        $affectationTemp
-            ->setAffectationOriginale($affectation)
-            ->setDateDebut($affectation->getDateDebut())
-            ->setDateFin($affectation->getDateFin())
-            ->setChantier($affectation->getChantier())
-            ->setMateriel($affectation->getMateriel())
-            ->setPanne($affectation->getPanne());
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_IP')")]
+#[Route('/{id}/edit', name: 'app_affectation_edit', methods: ['GET', 'POST'])]
+public function edit(
+    Request $request,
+    Affectation $affectation,
+    EntityManagerInterface $em,
+    MailerInterface $mailer,
+    UrlGeneratorInterface $urlGenerator,
+    AffectationRepository $affectationRepository // ← Utilisez AffectationRepository
+): Response {
+    $affectationTemp = new AffectationTemp();
+    $affectationTemp
+        ->setAffectationOriginale($affectation)
+        ->setDateDebut($affectation->getDateDebut())
+        ->setDateFin($affectation->getDateFin())
+        ->setChantier($affectation->getChantier())
+        ->setMateriel($affectation->getMateriel())
+        ->setPanne($affectation->getPanne());
 
-        $form = $this->createForm(AffectationTempType::class, $affectationTemp);
-        $form->handleRequest($request);
+    $form = $this->createForm(AffectationTempType::class, $affectationTemp);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Vérification chevauchement (exclut l'affectation actuelle)
+        if ($affectationRepository->chevauchementEdit($affectationTemp, $affectation)) {
+            $this->addFlash('error', 'Ce matériel est déjà affecté à un autre chantier sur cette période');
+            return $this->redirectToRoute('app_affectation_index');
+        }
             $em->persist($affectationTemp);
             $em->flush();
 
@@ -134,11 +160,18 @@ class AffectationController extends AbstractController
                 'token' => $affectationTemp->getToken()
             ], UrlGeneratorInterface::ABSOLUTE_URL);
 
+            $validationUrl = preg_replace(
+			    '#http://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):8000#',
+			    'http://41.188.51.242:8000',
+			    $validationUrl
+			);
+
             /** @var \App\Entity\User $user */
             $user = $this->getUser();
             $email = (new Email())
                 ->from($user->getEmail())
                 ->to($affectationTemp->getChantier()?->getEmail())
+                /*->cc('tiavina.rakotondrazaka@oti.mg')*/
                 ->subject('Validation de modification d\'une affectation')
                 ->html($this->renderView('emails/modification_affectation.html.twig', [
                     'affectation' => $affectationTemp,

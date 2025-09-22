@@ -41,6 +41,8 @@ class ChantierType extends AbstractType
                     'kanto@oti.mg' => 'kanto@oti.mg',
                     'radohery.rakotomalala@oti.mg' => 'radohery.rakotomalala@oti.mg',
                     'rivo@oti.mg' => 'rivo@oti.mg',
+                    'aaronkiady@gmail.com' => 'aaronkiady@gmail.com',
+                    'ramijoroaaaron@gmail.com' => 'ramijoroaaaron@gmail.com',
                 ],
             ])
 

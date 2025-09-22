@@ -103,12 +103,9 @@ public function setIsValidated(bool $isValidated): static
         $this->panne = $panne;
         return $this;
     }
-
-
-
-    /**
-     * Calcule la durée d'utilisation dans un mois donné.
-     */
+    
+    //Calcule la durée d'utilisation dans un mois donné.
+    
     public function getDureeUtilisation(\DateTimeInterface $mois): int
 {
     $debutAffectation = $this->getDateDebut();

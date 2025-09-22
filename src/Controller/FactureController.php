@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Facture;
-use App\Entity\Chantier;
 use App\Repository\AffectationRepository;
 use App\Repository\ChantierRepository;
 use App\Repository\FactureRepository;
@@ -17,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use IntlDateFormatter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Attribute\Security;
 
 #[Route('/facture')]
 class FactureController extends AbstractController
@@ -77,7 +75,7 @@ class FactureController extends AbstractController
 
         $tva = $totalHT * 0.2;
         $totalTTC = $totalHT + $tva;
-        $montantEnLettres = $this->convertirEnLettres($totalTTC);
+        $montantEnLettres = $this->convertirEnLettres($totalHT);
 
         $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE, 'Europe/Paris', IntlDateFormatter::GREGORIAN, 'MMMM');
         $moisTexte = ucfirst($formatter->format($mois));
@@ -94,6 +92,7 @@ class FactureController extends AbstractController
 
         $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         $numeroFacture = 'FA N°' . $newNumber . '-BASE-RME-' . $mois->format('Y');
+        $numeroFacture .= '<br>Capital social: 2 000 000 Ar';
 
         $facture = new Facture();
         $facture->setNumero($numeroFacture);
@@ -167,7 +166,7 @@ class FactureController extends AbstractController
 
         $tva = $totalHT * 0.2;
         $totalTTC = $totalHT + $tva;
-        $montantEnLettres = $this->convertirEnLettres($totalTTC);
+        $montantEnLettres = $this->convertirEnLettres($totalHT);
 
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');

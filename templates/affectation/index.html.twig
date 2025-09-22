@@ -5,8 +5,15 @@
 {% block body %}
 
 <div style="margin-left: 14px; margin-right: 14px">
-    <h2 style="margin-top: 30px;">Liste des affectations</h2>
+    <h2 style="margin-top: 30px;">Liste des affectations </h2>
 </div>
+
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger" style="font-size: 1.0rem;">
+        {{ message }} <a href="{{ path('app_gantt_index') }}">Consulter le Planning</a>
+    </div>
+{% endfor %}
+
 <div style="margin-top: 30px; margin-left: 14px; margin-right: 14px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
     {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_IP') %}

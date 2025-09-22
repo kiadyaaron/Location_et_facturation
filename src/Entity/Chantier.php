@@ -169,7 +169,6 @@ public function removeAffectation(Affectation $affectation): static
         return $this;
     }
 
-    //Getter/Setter pour accéder à la collection de matériels
 
     public function getMateriels(): Collection
     {

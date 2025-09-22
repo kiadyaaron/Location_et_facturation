@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 #[Route('/materiel')]
 final class MaterielController extends AbstractController{
@@ -50,55 +49,6 @@ final class MaterielController extends AbstractController{
 
         return $this->render('materiel/new.html.twig', [
             'materiel' => $materiel,
-            'form' => $form,
-        ]);
-    }
-
-    #[IsGranted('ROLE_ADMIN')]
-    #[Route('/import', name: 'app_import_kilometrage')]
-    public function importKilometrage(Request $request, EntityManagerInterface $em, MaterielRepository $repo): Response
-    {
-        $form = $this->createForm(ImportKilometrageType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $file = $form->get('excelFile')->getData();
-
-            try {
-                $spreadsheet = IOFactory::load($file->getPathname());
-                $sheet = $spreadsheet->getActiveSheet();
-                $rows = $sheet->toArray();
-
-                $updated = 0;
-                foreach (array_slice($rows, 1) as $row) {
-                    $libelle = trim((string) $row[0]);
-                    $kilometrage = trim((string) $row[1]);
-
-                    if (!$libelle || !$kilometrage || !is_numeric($kilometrage)) {
-                        continue;
-                    }
-
-                    $materiel = $repo->findOneBy(['libelle' => $libelle]);
-
-                    if ($materiel) {
-                        $materiel->setKilometrage((int) $kilometrage);
-                        $em->persist($materiel);
-                        $updated++;
-                    } else {
-                        $this->addFlash('error', "Matériel introuvable : '$libelle'");
-                    }
-                }
-
-                $em->flush();
-                $this->addFlash('success', "$updated matériels mis à jour.");
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'Erreur lors de l’import : ' . $e->getMessage());
-            }
-
-            return $this->redirectToRoute('app_materiel_index');
-        }
-
-        return $this->render('import/import_kilometrage.html.twig', [
             'form' => $form,
         ]);
     }

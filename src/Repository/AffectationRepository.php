@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Affectation;
+use App\Entity\AffectationTemp;
 use App\Entity\Chantier;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,10 +18,43 @@ class AffectationRepository extends ServiceEntityRepository
     /**
      * Retourne les affectations d’un chantier pour un mois donné.
      */
+// src/Repository/AffectationRepository.php
 
-    /**
-     * Retourne les affectations d’un chantier pour un mois donné.
-     */
+public function chevauchement(AffectationTemp $affectation): bool
+{
+    $qb = $this->createQueryBuilder('a');
+    $qb->select('COUNT(a.id)')
+        ->where('a.materiel = :materiel')
+        ->andWhere('a.isValidated = true')
+        ->andWhere('a.dateDebut <= :dateFin')
+        ->andWhere('a.dateFin >= :dateDebut')
+        ->setParameter('materiel', $affectation->getMateriel())
+        ->setParameter('dateDebut', $affectation->getDateDebut())
+        ->setParameter('dateFin', $affectation->getDateFin());
+
+    return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+}
+
+// src/Repository/AffectationRepository.php
+
+public function chevauchementEdit(AffectationTemp $affectation, Affectation $currentAffectation): bool
+{
+    $qb = $this->createQueryBuilder('a');
+    $qb->select('COUNT(a.id)')
+        ->where('a.materiel = :materiel')
+        ->andWhere('a.isValidated = true')
+        ->andWhere('a.id != :currentId') 
+        ->andWhere('a.dateDebut <= :dateFin')
+        ->andWhere('a.dateFin >= :dateDebut')
+        ->setParameter('materiel', $affectation->getMateriel())
+        ->setParameter('currentId', $currentAffectation->getId())
+        ->setParameter('dateDebut', $affectation->getDateDebut())
+        ->setParameter('dateFin', $affectation->getDateFin());
+
+    return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+}
+
+
     public function findByChantierEtMois(Chantier $chantier, \DateTimeImmutable $mois): array
     {
         $debutMois = $mois->modify('first day of this month')->setTime(0, 0);
