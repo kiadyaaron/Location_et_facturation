@@ -41,6 +41,9 @@ class Materiel
     #[ORM\OneToMany(mappedBy: 'materiel', targetEntity: Affectation::class, orphanRemoval: true)]
     private Collection $affectations;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Categorie = null;
+
     public function __construct()
 {
     $this->affectations = new ArrayCollection();
@@ -156,6 +159,18 @@ public function removeAffectation(Affectation $affectation): static
     public function setKilometrage(?int $kilometrage): static
     {
         $this->kilometrage = $kilometrage;
+        return $this;
+    }
+
+    public function getCategorie(): ?string
+    {
+        return $this->Categorie;
+    }
+
+    public function setCategorie(?string $Categorie): static
+    {
+        $this->Categorie = $Categorie;
+
         return $this;
     }
 }

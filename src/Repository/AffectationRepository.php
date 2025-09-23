@@ -15,10 +15,6 @@ class AffectationRepository extends ServiceEntityRepository
         parent::__construct($registry, Affectation::class);
     }
 
-    /**
-     * Retourne les affectations d’un chantier pour un mois donné.
-     */
-// src/Repository/AffectationRepository.php
 
 public function chevauchement(AffectationTemp $affectation): bool
 {
@@ -34,8 +30,6 @@ public function chevauchement(AffectationTemp $affectation): bool
 
     return (int) $qb->getQuery()->getSingleScalarResult() > 0;
 }
-
-// src/Repository/AffectationRepository.php
 
 public function chevauchementEdit(AffectationTemp $affectation, Affectation $currentAffectation): bool
 {

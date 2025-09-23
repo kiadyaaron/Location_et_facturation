@@ -10,7 +10,7 @@
     <style>
         /* Container global */
         .planning-container {
-            background: #f8f9fa;
+            background: #ffffffff;
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -20,7 +20,7 @@
         /* Titre */
         .planning-container h3 {
             font-weight: 600;
-            color: #2c3e50;
+            color: #2e2e2eff;
             margin-bottom: 20px;
         }
 
@@ -76,7 +76,6 @@
             <input type="text" id="searchInput" class="form-control" placeholder=" Rechercher un matériel ou un chantier...">
         </div>
 
-        <!-- Gantt -->
         <div id="gantt"></div>
     </div>
 </div>
@@ -94,12 +93,11 @@
             custom_popup_html: task => `
                 <div class="details-container">
                     <b>${task.name}</b><br>
-                    ⏳ Du <i>${task.start}</i> au <i>${task.end}</i>
+                    Du <i>${task.start}</i> au <i>${task.end}</i>
                 </div>`
         });
     }
 
-    // Première affichage
     renderGantt(tasks);
 
     // Recherche en direct

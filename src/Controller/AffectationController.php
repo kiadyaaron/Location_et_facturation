@@ -54,11 +54,6 @@ public function new(
             $this->addFlash('error', 'Ce matériel est déjà affecté à un autre chantier sur cette période.');
             return $this->redirectToRoute('app_affectation_index');
         }
-        // Vérification chevauchement avec les affectations temporaires
-    if ($affectationTempRepository->chevauchement($affectationTemp)) {
-        $this->addFlash('error', 'Une demande d\'affectation est déjà en cours pour ce matériel sur cette période.');
-        return $this->redirectToRoute('app_affectation_index');
-    }
             $em->persist($affectationTemp);
             $em->flush();
 
