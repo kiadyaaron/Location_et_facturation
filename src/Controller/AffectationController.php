@@ -128,7 +128,7 @@ public function edit(
     EntityManagerInterface $em,
     MailerInterface $mailer,
     UrlGeneratorInterface $urlGenerator,
-    AffectationRepository $affectationRepository // ← Utilisez AffectationRepository
+    AffectationRepository $affectationRepository
 ): Response {
     $affectationTemp = new AffectationTemp();
     $affectationTemp
